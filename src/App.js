@@ -1,8 +1,9 @@
 // Components and Modules
 import { useEffect, useState } from 'react';
 import realtime from './firebase.js';
-import { ref, onValue, push, remove } from 'firebase/database';
-
+import { ref, onValue, remove } from 'firebase/database';
+import AddRoutine from './Components/AddRoutine.js';
+import DateSelect from './Components/DateSelect.js';
 // Stylings
 import './App.scss';
 
@@ -10,6 +11,13 @@ function App() {
 
   const [routineList, setRoutineList] = useState([]);
   const [userRoutine, setUserRoutine] = useState({});
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [chosenClass, setChosenClass] = useState('');
+
+
+
 
   // Running this useEffect only when the component mounts
   useEffect(() => {
@@ -25,34 +33,81 @@ function App() {
       const newRoutineArray = [];
 
       for (let propName in myRoutines) {
-        const newRoutine = {
+        const routineItem = {
           key: propName,
-          routineName: myRoutines[propName]
+          routine: myRoutines[propName]
         };
 
-        newRoutineArray.push(newRoutine);
+        newRoutineArray.push(routineItem);
       };
 
       setRoutineList(newRoutineArray);
 
     });
 
-  }, []);
+
+  }, []); // end of useEffect
+
+
+  const removeRoutine = (specificNodeKey) => {
+    const specificNodeRef = ref(realtime, specificNodeKey);
+
+
+    console.log(specificNodeRef);
+    remove(specificNodeRef);
+  };
+
+
+
 
   return (
     <div className="App">
-      <h1>Solo React Project!</h1>
-      <ul>
-        {
-          routineList.map((individualRoutine) => {
-            return (
-              <li key={individualRoutine.key}>
-                <p>Test</p>
-              </li>
-            )
-          })
-        }
-      </ul>
+      <div className="wrapper">
+
+        <header>
+          <h1>Routinely</h1>
+        </header>
+        <main>
+
+          <ul className="dateSelect">
+            <DateSelect />
+          </ul>
+          <ul className="routineContainer">
+            <li>
+              <button onClick={() => setModalOpen(!modalOpen)}>+</button>
+              {modalOpen && <AddRoutine
+                modalChange={setModalOpen}
+                modalStatus={modalOpen}
+              />}
+            </li>
+            {/* filter and then map depending on the day */}
+            {
+              routineList.map((individualRoutine) => {
+                const { key, routine } = individualRoutine
+
+                return (
+                  <li key={key}>
+
+                    <input type="checkbox" id={key} />
+                    <label htmlFor={key}>{routine.routineName}</label>
+                    <button onClick={() => removeRoutine(key)}>...</button>
+
+                  </li>
+
+                )
+              })
+            }
+
+          </ul>
+        </main>
+        <footer>
+          <p>Created by
+            <a href="https://github.com/scwchen" target="_blank"> Steven Chen at</a>
+            <a href="https://junocollege.com/" target="_blank"> Juno College</a> 2021
+          </p>
+        </footer>
+      </div> {/* end of wrapper */}
+
     </div>
   );
 }
