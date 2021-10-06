@@ -2,21 +2,22 @@
 import { useEffect, useState } from 'react';
 import realtime from './firebase.js';
 import { ref, onValue, remove } from 'firebase/database';
-import AddRoutine from './Components/AddRoutine.js';
 import DateSelect from './Components/DateSelect.js';
+import AddRoutine from './Components/AddRoutine.js';
+
 // Stylings
 import './App.scss';
 
 function App() {
 
+  const today = new Date;
+
+  const [selectedDay, setSelectedDay] = useState(today.getDay());
+
   const [routineList, setRoutineList] = useState([]);
   const [userRoutine, setUserRoutine] = useState({});
 
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const [chosenClass, setChosenClass] = useState('');
-
-
+  const [addRoutineOpen, setaddRoutineOpen] = useState(false);
 
 
   // Running this useEffect only when the component mounts
@@ -49,6 +50,41 @@ function App() {
   }, []); // end of useEffect
 
 
+  const showDate = () => {
+
+    let dayCounter = new Date;
+
+    dayCounter.setDate(today.getDate() - today.getDay());
+
+    const weekdays = [];
+
+    for (let i = 0; i < 7; i++) {
+      // formatting to string and removing the year portion of the date
+      const dateString = dayCounter.toDateString().slice(0, -5);
+      let chosenDate = '';
+
+      if (dayCounter.getDate() === today.getDate()) {
+        chosenDate = ' chosenDate';
+      }
+
+      weekdays.push({ dateString, chosenDate });
+
+      dayCounter.setDate(dayCounter.getDate() + 1);
+    }
+
+    return weekdays;
+  };
+
+  const selectDate = (selectedDate) => {
+    setSelectedDay(selectedDate.value);
+    console.log(selectedDay);
+    // would have to remove the class for each first, maybe a useEffect?
+  };
+
+  const routineModal = () => {
+    setaddRoutineOpen(!addRoutineOpen);
+  }
+
   const removeRoutine = (specificNodeKey) => {
     const specificNodeRef = ref(realtime, specificNodeKey);
 
@@ -56,9 +92,6 @@ function App() {
     console.log(specificNodeRef);
     remove(specificNodeRef);
   };
-
-
-
 
   return (
     <div className="App">
@@ -70,17 +103,17 @@ function App() {
         <main>
 
           <ul className="dateSelect">
-            <DateSelect />
+            <DateSelect 
+            selectDate={selectDate}
+            showDate={showDate}/>
           </ul>
           <ul className="routineContainer">
             <li>
-              <button onClick={() => setModalOpen(!modalOpen)}>+</button>
-              {modalOpen && <AddRoutine
-                modalChange={setModalOpen}
-                modalStatus={modalOpen}
-              />}
+              <button onClick={routineModal}>+</button>
+              {addRoutineOpen && <AddRoutine modalToggle={routineModal} />}
             </li>
-            {/* filter and then map depending on the day */}
+            <li>
+              <form>
             {
               routineList.map((individualRoutine) => {
                 const { key, routine } = individualRoutine
@@ -90,13 +123,21 @@ function App() {
 
                     <input type="checkbox" id={key} />
                     <label htmlFor={key}>{routine.routineName}</label>
-                    <button onClick={() => removeRoutine(key)}>...</button>
+                    <button onClick={()=>removeRoutine(key)}>X</button>
+
 
                   </li>
 
                 )
               })
+
             }
+
+              </form>
+
+            </li>
+            
+
 
           </ul>
         </main>
