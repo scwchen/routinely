@@ -10,12 +10,11 @@ import './App.scss';
 
 function App() {
 
-  const today = new Date;
+  const today = new Date();
 
   const [selectedDay, setSelectedDay] = useState(today.getDay());
 
   const [routineList, setRoutineList] = useState([]);
-  const [userRoutine, setUserRoutine] = useState({});
 
   const [addRoutineOpen, setaddRoutineOpen] = useState(false);
 
@@ -52,7 +51,7 @@ function App() {
 
   const showDate = () => {
 
-    let dayCounter = new Date;
+    let dayCounter = new Date();
 
     dayCounter.setDate(today.getDate() - today.getDay());
 
@@ -143,8 +142,8 @@ function App() {
         </main>
         <footer>
           <p>Created by
-            <a href="https://github.com/scwchen" target="_blank"> Steven Chen at</a>
-            <a href="https://junocollege.com/" target="_blank"> Juno College</a> 2021
+            <a href="https://github.com/scwchen" target="_blank" rel="noreferrer"> Steven Chen at</a>
+            <a href="https://junocollege.com/" target="_blank" rel="noreferrer"> Juno College</a> 2021
           </p>
         </footer>
       </div> {/* end of wrapper */}
