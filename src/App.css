@@ -236,6 +236,10 @@ html {
   font-size: 125%;
 }
 
+body {
+  position: relative;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
@@ -267,34 +271,80 @@ header {
 DATE SELECTOR
 =========================================== */
 .dateSelect {
-  margin: 5% 0 0;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-}
-.dateSelect li {
   box-shadow: inset 0px 0px 2px 2px black;
+  padding: 2%;
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
 }
-.dateSelect li p {
+.dateSelect .dates {
+  display: flex;
+  grid-column: 2/3;
+}
+.dateSelect p {
   text-align: center;
   cursor: pointer;
-  padding: 10% 2%;
+  padding: 2%;
+  box-shadow: inset 0px 0px 2px 2px black;
 }
 .dateSelect .chosen {
   box-shadow: 0px 0px 1px 2px #fd0000;
 }
-.dateSelect .date {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
+
+/* ===========================================
+MODALS
+=========================================== */
+.modalBackground {
+  position: absolute;
+  padding: 10%;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+}
+.modalBackground .modal {
+  background: #9dceff;
+  padding: 5%;
+  border: 2px solid black;
+  border-radius: 10px;
 }
 
 /* ===========================================
 ROUTINES
 =========================================== */
 .routineContainer {
-  box-shadow: inset 0px 0px 2px 2px #e94545;
+  box-shadow: inset 0px 0px 2px 2px black;
   padding: 2%;
+}
+.routineContainer .routineItem {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  margin: 2% 0;
+}
+.routineContainer .routineItem .dailyCheck {
+  margin: 0 2%;
+}
+.routineContainer .routineItem .editButton {
+  display: flex;
+  justify-content: flex-end;
+}
+.routineContainer button {
+  cursor: pointer;
+  border: none;
+  box-shadow: inset 0 0 2px 2px grey;
+  border-radius: 100%;
+  height: 5vw;
+  width: 5vw;
+}
+.routineContainer button.disabled {
+  cursor: initial;
+  box-shadow: none;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 143, 135, 0.1);
+}
+.routineContainer button.chosen {
+  background: #7aff6e;
 }
 
 /* ===========================================

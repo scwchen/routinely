@@ -1,17 +1,17 @@
-// import { useEffect, useState } from 'react';
+import showDate from '../Functions/dateFunctions.js';
 
 
-const DateSelect = ({selectDate, showDate}) => {
+const DateSelect = ({ selectDate, today }) => {
 
     return (
         // dow stands for dayOfWeek
-        showDate().map((dow, index) => {
+        showDate(today).map((dow, index) => {
             const dateIndex = `day${index}`;
 
             return (
-                <li key={dateIndex} onClick={(e) => selectDate(e.target)}>
-                    <p>{dow.dateString.slice(0, 3)} {dow.dateString.slice(3)}</p>
-                </li>
+                // <li >
+                <p key={dateIndex} onClick={(e) => selectDate(e.target)}>{dow.dateString.slice(0, 3)} {dow.dateString.slice(3)}</p>
+                // </li>
             );
         })
     )

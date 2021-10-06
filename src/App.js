@@ -1,9 +1,12 @@
 // Components and Modules
 import { useEffect, useState } from 'react';
 import realtime from './firebase.js';
-import { ref, onValue, remove } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
+import deleteRoutine from './Functions/deleteRoutine.js';
 import DateSelect from './Components/DateSelect.js';
 import AddRoutine from './Components/AddRoutine.js';
+import DailyChecks from './Components/DailyChecks.js';
+
 
 // Stylings
 import './App.scss';
@@ -12,17 +15,17 @@ function App() {
 
   const today = new Date();
 
-  const [selectedDay, setSelectedDay] = useState(today.getDay());
+  // const [selectedDay, setSelectedDay] = useState(today.getDay());
 
   const [routineList, setRoutineList] = useState([]);
 
   const [addRoutineOpen, setaddRoutineOpen] = useState(false);
 
+  // const [routineFrequency, setRoutineFrequency] = useState([]);
 
   // Running this useEffect only when the component mounts
   useEffect(() => {
     const dbRef = ref(realtime);
-
 
     // We grab a snapshot of our database and use the .val method to parse the JSON object that is our database data out of it
     onValue(dbRef, (snapshot) => {
@@ -45,52 +48,18 @@ function App() {
 
     });
 
-
   }, []); // end of useEffect
 
-
-  const showDate = () => {
-
-    let dayCounter = new Date();
-
-    dayCounter.setDate(today.getDate() - today.getDay());
-
-    const weekdays = [];
-
-    for (let i = 0; i < 7; i++) {
-      // formatting to string and removing the year portion of the date
-      const dateString = dayCounter.toDateString().slice(0, -5);
-      let chosenDate = '';
-
-      if (dayCounter.getDate() === today.getDate()) {
-        chosenDate = ' chosenDate';
-      }
-
-      weekdays.push({ dateString, chosenDate });
-
-      dayCounter.setDate(dayCounter.getDate() + 1);
-    }
-
-    return weekdays;
-  };
-
   const selectDate = (selectedDate) => {
-    setSelectedDay(selectedDate.value);
-    console.log(selectedDay);
-    // would have to remove the class for each first, maybe a useEffect?
+    // setSelectedDay(selectedDate.value);
+    // console.log(selectedDay);
+
   };
 
   const routineModal = () => {
     setaddRoutineOpen(!addRoutineOpen);
   }
 
-  const removeRoutine = (specificNodeKey) => {
-    const specificNodeRef = ref(realtime, specificNodeKey);
-
-
-    console.log(specificNodeRef);
-    remove(specificNodeRef);
-  };
 
   return (
     <div className="App">
@@ -101,28 +70,48 @@ function App() {
         </header>
         <main>
 
-          <ul className="dateSelect">
-            <DateSelect 
-            selectDate={selectDate}
-            showDate={showDate}/>
-          </ul>
+          <div className="dateSelect">
+            <div className="dates">
+              <DateSelect
+                selectDate={selectDate}
+                today={today} />
+
+            </div>
+          </div>
           <ul className="routineContainer">
-            <li>
+
+
+            {/* Modal for Adding Routines */}
+            {addRoutineOpen && <AddRoutine modalToggle={routineModal} />}
+
+            {/* Button to Add a new routine */}
+            <li className="addButton">
               <button onClick={routineModal}>+</button>
-              {addRoutineOpen && <AddRoutine modalToggle={routineModal} />}
             </li>
-            <li>
-              <form>
+
             {
               routineList.map((individualRoutine) => {
                 const { key, routine } = individualRoutine
 
                 return (
-                  <li key={key}>
+                  <li key={key} className="routineItem">
 
-                    <input type="checkbox" id={key} />
-                    <label htmlFor={key}>{routine.routineName}</label>
-                    <button onClick={()=>removeRoutine(key)}>X</button>
+
+                    {/* <input type="checkbox" id={key} /> */}
+                    {/* <label htmlFor={key}>{routine.routineName}</label> */}
+
+                    <div className="routineName">
+                      <p>{routine.routineName}</p>
+
+                    </div>
+
+                    <div className="routineDetails">
+                      <DailyChecks freq={routine.frequency} />
+                    </div>
+                    <div className="editButton">
+
+                      <button onClick={() => deleteRoutine(key)}><i className="far fa-trash-alt"></i></button>
+                    </div>
 
 
                   </li>
@@ -132,13 +121,11 @@ function App() {
 
             }
 
-              </form>
 
-            </li>
-            
 
 
           </ul>
+
         </main>
         <footer>
           <p>Created by

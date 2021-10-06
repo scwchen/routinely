@@ -2,6 +2,7 @@ import { useState } from "react";
 import realtime from '../firebase.js';
 import { ref, push } from 'firebase/database';
 
+// set a status for the edit modal as well. it can be the same one but just load from firebase instead
 const AddRoutine = ({ modalToggle }) => {
 
     // State for the name of the routine
@@ -30,7 +31,7 @@ const AddRoutine = ({ modalToggle }) => {
             const newRoutine = {
                 routineName: routineName,
                 frequency: checkedDays,
-                completed: [],
+                completed: ["0000-00-00"],
             }
 
             push(dbRef, newRoutine);
@@ -70,33 +71,36 @@ const AddRoutine = ({ modalToggle }) => {
     };
 
     return (
-        <div>
-            <button onClick={modalToggle}>X</button>
+        <div className="modalBackground">
 
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="routineName">Routine Name</label>
-                <input type="text" id="routineName" onChange={handleNameChange} value={routineName} />
+            <div className="modal addEditRoutineModal">
+                <button onClick={modalToggle}>X</button>
 
-                <fieldset>
-                    <label htmlFor="Sun">S</label>
-                    <input onChange={(e) => handleDayChange(e, setCheckedDay1, checkedDay1)} type="checkbox" name="daysOfWeek" id="Sun" checked={checkedDay1} value={0} />
-                    <label htmlFor="Mon">M</label>
-                    <input onChange={(e) => handleDayChange(e, setCheckedDay2, checkedDay2)} type="checkbox" name="daysOfWeek" id="Mon" checked={checkedDay2} value={1} />
-                    <label htmlFor="Tue">T</label>
-                    <input onChange={(e) => handleDayChange(e, setCheckedDay3, checkedDay3)} type="checkbox" name="daysOfWeek" id="Tues" checked={checkedDay3} value={2} />
-                    <label htmlFor="Wed">W</label>
-                    <input onChange={(e) => handleDayChange(e, setCheckedDay4, checkedDay4)} type="checkbox" name="daysOfWeek" id="Wed" checked={checkedDay4} value={3} />
-                    <label htmlFor="Thu">T</label>
-                    <input onChange={(e) => handleDayChange(e, setCheckedDay5, checkedDay5)} type="checkbox" name="daysOfWeek" id="Thu" checked={checkedDay5} value={4} />
-                    <label htmlFor="Fri">F</label>
-                    <input onChange={(e) => handleDayChange(e, setCheckedDay6, checkedDay6)} type="checkbox" name="daysOfWeek" id="Fri" checked={checkedDay6} value={5} />
-                    <label htmlFor="Sat">S</label>
-                    <input onChange={(e) => handleDayChange(e, setCheckedDay7, checkedDay7)} type="checkbox" name="daysOfWeek" id="Sat" checked={checkedDay7} value={6} />
-                </fieldset>
+                <form onSubmit={handleSubmit}>
+                    <label htmlFor="routineName">Routine Name</label>
+                    <input type="text" id="routineName" onChange={handleNameChange} value={routineName} />
 
-                <button type="submit">Add Routine</button>
-            </form>
+                    <fieldset>
+                        <label htmlFor="Sun">S</label>
+                        <input onChange={(e) => handleDayChange(e, setCheckedDay1, checkedDay1)} type="checkbox" name="daysOfWeek" id="Sun" checked={checkedDay1} value={0} />
+                        <label htmlFor="Mon">M</label>
+                        <input onChange={(e) => handleDayChange(e, setCheckedDay2, checkedDay2)} type="checkbox" name="daysOfWeek" id="Mon" checked={checkedDay2} value={1} />
+                        <label htmlFor="Tue">T</label>
+                        <input onChange={(e) => handleDayChange(e, setCheckedDay3, checkedDay3)} type="checkbox" name="daysOfWeek" id="Tues" checked={checkedDay3} value={2} />
+                        <label htmlFor="Wed">W</label>
+                        <input onChange={(e) => handleDayChange(e, setCheckedDay4, checkedDay4)} type="checkbox" name="daysOfWeek" id="Wed" checked={checkedDay4} value={3} />
+                        <label htmlFor="Thu">T</label>
+                        <input onChange={(e) => handleDayChange(e, setCheckedDay5, checkedDay5)} type="checkbox" name="daysOfWeek" id="Thu" checked={checkedDay5} value={4} />
+                        <label htmlFor="Fri">F</label>
+                        <input onChange={(e) => handleDayChange(e, setCheckedDay6, checkedDay6)} type="checkbox" name="daysOfWeek" id="Fri" checked={checkedDay6} value={5} />
+                        <label htmlFor="Sat">S</label>
+                        <input onChange={(e) => handleDayChange(e, setCheckedDay7, checkedDay7)} type="checkbox" name="daysOfWeek" id="Sat" checked={checkedDay7} value={6} />
+                    </fieldset>
 
+                    <button type="submit">Add Routine</button>
+                </form>
+
+            </div>
         </div>
     )
 }
