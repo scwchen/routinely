@@ -1,18 +1,21 @@
 @import "./sass/setup";
 @import url("https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap");
 
-/* ===========================================
-VARIABLES
-=========================================== */
+// ===========================================
+// VARIABLES
+// ===========================================
+
 $primary-color: #31d3fc;
 $secondary-color: #ffeae9;
 $complementary-color: #e13e3e;
+$chosen-color: #7aff6e;
+$pale-blue: #e1f3fd;
 
-/* ===========================================
-MIXINS
-=========================================== */
+// ===========================================
+// MIXINS
+// ===========================================
+
 @mixin roundedBorder {
-    // border: 2px solid #000;
     box-shadow: inset 0px 0px 2px 2px #000;
     border-radius: 5px;
 }
@@ -40,11 +43,11 @@ GENERAL STYLINGS
 
 html {
     font-size: 125%;
-    word-wrap: break-word;
 }
 
 body {
     position: relative;
+    word-wrap: break-word;
 }
 
 ul {
@@ -62,13 +65,15 @@ ul {
 }
 
 button {
-    background: rgba(9, 165, 255, 0.1);
+    cursor: pointer;
+    background: $pale-blue;
     padding: 0;
     margin: 0;
 }
 
 fieldset {
     border: none;
+    margin: 0;
 }
 
 /* ===========================================
@@ -117,8 +122,14 @@ MODALS
         background: white;
         padding: 5%;
 
-        border: 2px solid black;
-        border-radius: 10px;
+        @include roundedBorder();
+
+        .modalOption {
+            @include roundedBorder();
+            border: none;
+            margin: 3%;
+            padding: 3%;
+        }
         .closeModal {
             @include buttonSize();
             border-radius: 25%;
@@ -133,20 +144,45 @@ MODALS
     }
 
     .addRoutineModal {
-        height: 80%;
         .addRoutineModalForm {
             @include roundedBorder();
             @include hideScrollbars();
             max-height: 100%;
+            text-align: center;
         }
 
-        input {
-            width: 100%;
-        }
+        input[type="text"],
         textarea {
+            margin: 1% 0;
             width: 100%;
-            height: 30vh;
+            border: 2px solid black;
+            border-radius: 5px;
+        }
+
+        textarea {
+            height: 20vh;
             resize: none;
+        }
+    }
+
+    .addCheckDays {
+        display: flex;
+        justify-content: space-between;
+        padding: 2%;
+
+        .addDay {
+            @include roundedBorder();
+            @include buttonSize();
+
+            border: none;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            &.chosen {
+                background: $chosen-color;
+            }
         }
     }
 
@@ -156,7 +192,7 @@ MODALS
         align-items: center;
         text-align: center;
         .confirmationWindow > * {
-            margin: 2% 0;
+            margin: 5% 0;
         }
         .deletionButtons {
             text-align: center;
@@ -167,6 +203,11 @@ MODALS
     .routineNameDetails {
         display: flex;
         flex-direction: column;
+    }
+
+    .errorMessage {
+        color: $complementary-color;
+        font-style: italic;
     }
 }
 
@@ -180,6 +221,16 @@ ROUTINES
     justify-content: space-between;
     padding: 4% 2%;
 
+    .moreInfo {
+        position: fixed;
+        bottom: 7%;
+        right: 0;
+        background: white;
+        z-index: 30;
+        height: 30px;
+        width: 30px;
+    }
+
     .addButton {
         position: absolute;
         bottom: 0%;
@@ -191,23 +242,57 @@ ROUTINES
         }
     }
 
-    .prompt {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        text-align: center;
-        transform: translate(-50%, -50%);
+    .promptContainer {
+        padding: 2% 0;
+        .prompt {
+            text-align: center;
+        }
     }
 
-    .routineItem {
-        box-shadow: 0px 0px 2px 2px rgb(0, 0, 0);
-        border-radius: 5px;
+    .routineDescription {
+        @include roundedBorder();
+        background: $pale-blue;
+        padding: 5% 2%;
+    }
+
+    button {
+        @include buttonSize();
+        border: none;
+        box-shadow: inset 0 0 2px 2px grey;
+        border-radius: 25%;
+
+        &.disabled {
+            cursor: initial;
+            box-shadow: none;
+            background: $secondary-color;
+        }
+        &.chosen {
+            background: $chosen-color;
+        }
+    }
+}
+
+.routineItem {
+    box-shadow: 0px 0px 2px 2px rgb(0, 0, 0);
+    border-radius: 5px;
+
+    padding: 2%;
+    margin: 2% 0;
+    display: flex;
+    flex-direction: column;
+
+    .routineDetails {
         display: grid;
         grid-template-columns: 20% 8fr 1fr;
-        padding: 2%;
-        margin: 2% 0;
-
-        .routineDetails {
+        .routineName {
+            display: flex;
+            align-items: center;
+            margin-right: 2%;
+            p {
+                max-width: 100%;
+            }
+        }
+        .routineChecks {
             display: flex;
             flex-wrap: nowrap;
             justify-content: space-between;
@@ -216,6 +301,7 @@ ROUTINES
         .delButton {
             display: flex;
             justify-content: flex-end;
+            position: relative;
 
             button {
                 color: white;
@@ -224,30 +310,10 @@ ROUTINES
             }
         }
     }
-
-    button {
-        cursor: pointer;
-        border: none;
-        box-shadow: inset 0 0 2px 2px grey;
-        border-radius: 25%;
-        @include buttonSize();
-        // margin: 2% 0;
-        &.disabled {
-            cursor: initial;
-            box-shadow: none;
-            border-color: rgba(0, 0, 0, 0.2);
-            color: rgba(0, 0, 0, 0.2);
-            background: $secondary-color;
-        }
-        &.chosen {
-            background: #7aff6e;
-        }
+    .routineDescription {
+        margin: 2% 0;
     }
 }
-
-// * {
-//     outline: 1px solid red;
-// }
 
 .dateSelect {
     padding: 2%;
@@ -322,24 +388,29 @@ MEDIA
             display: flex;
             .dates {
                 width: 100%;
-                // background: none;
-                // box-shadow: none;
             }
         }
-        .routineItem {
+    }
+
+    .routineItem {
+        .routineDetails {
             display: flex;
             flex-direction: column;
             align-items: center;
             & > * {
                 margin: 2% 0;
             }
-            .routineDetails {
+            .routineName {
+                margin: 0;
+            }
+            .routineChecks {
                 width: 100%;
             }
         }
     }
 
     .modalBackground .modal .closeModal,
+    .modalBackground .addCheckDays .addDay,
     .routineContainer button,
     .dateSelect p {
         height: 8vw;
@@ -354,10 +425,11 @@ MEDIA
             background: none;
             box-shadow: none;
         }
-        .routineItem .delButton button {
-            color: $complementary-color;
-            background: none;
-            box-shadow: none;
-        }
+    }
+
+    .routineItem .delButton button {
+        color: $complementary-color;
+        background: none;
+        box-shadow: none;
     }
 }

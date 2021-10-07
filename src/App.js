@@ -1,12 +1,11 @@
 // Components and Modules
 import { useEffect, useState } from 'react';
+import { ref, onValue, update, remove } from 'firebase/database';
 import realtime from './firebase.js';
-import { ref, onValue, remove } from 'firebase/database';
 import DateSelect from './Components/DateSelect.js';
 import AddRoutine from './Components/AddRoutine.js';
 import DailyChecks from './Components/DailyChecks.js';
 import ConfirmDelete from './Components/ConfirmDelete.js';
-
 
 // Stylings
 import './App.scss';
@@ -18,8 +17,7 @@ function App() {
   const [addRoutineOpen, setAddRoutineOpen] = useState(false);
   const [deleteRoutineOpen, setDeleteRoutineOpen] = useState(false);
   const [toDelete, setToDelete] = useState('');
-
-  // const [toComplete, setToComplete] = useState('');
+  const [descriptionOpen, setDescriptionOpen] = useState(false);
 
   // Running this useEffect only when the component mounts
   useEffect(() => {
@@ -29,7 +27,6 @@ function App() {
     onValue(dbRef, (snapshot) => {
 
       const myRoutines = snapshot.val();
-      // Have to go down one level further 
 
       const newRoutineArray = [];
 
@@ -49,6 +46,7 @@ function App() {
   }, []); // end of useEffect
 
 
+
   // Function to delete routine from the database
   const deleteRoutine = () => {
     const specificNodeRef = ref(realtime, toDelete);
@@ -58,6 +56,19 @@ function App() {
     delModal();
   };
 
+  // Function to update the routine in the database with completions
+  const updateRoutine = (completed, refID) => {
+    const specificNodeRef = ref(realtime, refID);
+
+    const newCompleted = {
+      completed: completed
+    }
+
+    update(specificNodeRef, newCompleted);
+
+  };
+
+
   // Modal open and close functions
   const addModal = () => {
     setAddRoutineOpen(!addRoutineOpen);
@@ -66,6 +77,11 @@ function App() {
   const delModal = () => {
     setDeleteRoutineOpen(!deleteRoutineOpen);
   }
+
+  // Toggle the description open and closed
+  const toggleDescription = () => {
+    setDescriptionOpen(!descriptionOpen);
+  };
 
   return (
     <div className="App">
@@ -77,26 +93,33 @@ function App() {
         </header>
         <main>
 
+
+
+          {/* Adding the Add and Delete modals but only rendering when needed */}
           {addRoutineOpen && <AddRoutine modalToggle={addModal} />}
           {deleteRoutineOpen && <ConfirmDelete modalToggle={delModal} deleteRoutine={deleteRoutine} />}
 
           <section className="routineContainer">
 
-
             {/* Button to Add a new routine */}
             <div className="addButton">
-              <button onClick={addModal}>+</button>
+              <button onClick={addModal}><i className="fas fa-plus"></i></button>
             </div>
+
+            {/* Debating whether I should use a button or not */}
+            <button className="moreInfo" onClick={toggleDescription}>
+              <i className="fas fa-info"></i>
+            </button>
 
             {
               routineList.length === 0 ?
-
-                <p className="prompt">Start with just one habit</p>
+                <div className="promptContainer">
+                  <p className="prompt">Start with just one habit</p>
+                </div>
                 :
                 <div className="dateSelect">
                   <div className="dates">
                     <DateSelect />
-
                   </div>
                 </div>
             }
@@ -106,32 +129,41 @@ function App() {
               routineList.map((individualRoutine) => {
                 const { key, routine } = individualRoutine;
 
-                // console.log(individualRoutine);
                 return (
                   <div key={key} className="routineItem">
 
-                    <div className="routineName">
-                      <p>{routine.routineName}</p>
-                    </div>
-
                     <div className="routineDetails">
-                      <DailyChecks
-                        freq={routine.frequency}
-                        completed={routine.completed} />
+                      <div className="routineName">
+                        <p >{routine.routineName}</p>
+                      </div>
+
+                      <div className="routineChecks">
+                        {/* Adding the checkboxes for each date */}
+                        <DailyChecks
+                          freq={routine.frequency}
+                          completed={routine.completed}
+                          routineID={key}
+                          updateRoutine={updateRoutine} />
+                      </div>
+
+
+                      {/* Adding a delete button for each routine */}
+                      <div className="delButton">
+
+                        <button value={toDelete} onClick={() => {
+                          delModal();
+                          setToDelete(key);
+
+                        }}><i className="far fa-trash-alt"></i></button>
+
+                      </div>
                     </div>
 
-
-                    {/* Adding a delete button for each routine */}
-                    <div className="delButton">
-
-                      <button value={toDelete} onClick={() => {
-                        delModal();
-                        setToDelete(key);
-
-                      }}><i className="far fa-trash-alt"></i></button>
-
-                    </div>
-
+                    {/* Toggle descriptions  */}
+                    {descriptionOpen === true &&
+                      <div className="routineDescription">
+                        <p>Description: {routine.description}</p>
+                      </div>}
 
                   </div>
 
@@ -143,6 +175,7 @@ function App() {
           </section> {/* end of routineContainer */}
 
         </main> {/* end of main */}
+
       </div> {/* end of wrapper */}
 
       <footer>
@@ -152,7 +185,8 @@ function App() {
           <a href="https://junocollege.com/" target="_blank" rel="noreferrer"> Juno College</a> 2021
         </p>
       </footer>
-    </div>
+    </div>     // end of App
+
   );
 }
 

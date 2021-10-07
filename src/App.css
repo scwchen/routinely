@@ -231,21 +231,15 @@ html {
 }
 
 /* ===========================================
-VARIABLES
-=========================================== */
-/* ===========================================
-MIXINS
-=========================================== */
-/* ===========================================
 GENERAL STYLINGS
 =========================================== */
 html {
   font-size: 125%;
-  word-wrap: break-word;
 }
 
 body {
   position: relative;
+  word-wrap: break-word;
 }
 
 ul {
@@ -263,13 +257,15 @@ ul {
 }
 
 button {
-  background: rgba(9, 165, 255, 0.1);
+  cursor: pointer;
+  background: #e1f3fd;
   padding: 0;
   margin: 0;
 }
 
 fieldset {
   border: none;
+  margin: 0;
 }
 
 /* ===========================================
@@ -313,8 +309,15 @@ MODALS
   z-index: 10;
   background: white;
   padding: 5%;
-  border: 2px solid black;
-  border-radius: 10px;
+  box-shadow: inset 0px 0px 2px 2px #000;
+  border-radius: 5px;
+}
+.modalBackground .modal .modalOption {
+  box-shadow: inset 0px 0px 2px 2px #000;
+  border-radius: 5px;
+  border: none;
+  margin: 3%;
+  padding: 3%;
 }
 .modalBackground .modal .closeModal {
   max-height: 80px;
@@ -330,9 +333,6 @@ MODALS
   background: #9dceff;
   border: 2px solid #000;
 }
-.modalBackground .addRoutineModal {
-  height: 80%;
-}
 .modalBackground .addRoutineModal .addRoutineModalForm {
   box-shadow: inset 0px 0px 2px 2px #000;
   border-radius: 5px;
@@ -340,17 +340,42 @@ MODALS
   scrollbar-width: none;
   overflow-y: scroll;
   max-height: 100%;
+  text-align: center;
 }
 .modalBackground .addRoutineModal .addRoutineModalForm::-webkit-scrollbar {
   display: none;
 }
-.modalBackground .addRoutineModal input {
+.modalBackground .addRoutineModal input[type=text],
+.modalBackground .addRoutineModal textarea {
+  margin: 1% 0;
   width: 100%;
+  border: 2px solid black;
+  border-radius: 5px;
 }
 .modalBackground .addRoutineModal textarea {
-  width: 100%;
-  height: 30vh;
+  height: 20vh;
   resize: none;
+}
+.modalBackground .addCheckDays {
+  display: flex;
+  justify-content: space-between;
+  padding: 2%;
+}
+.modalBackground .addCheckDays .addDay {
+  box-shadow: inset 0px 0px 2px 2px #000;
+  border-radius: 5px;
+  max-height: 80px;
+  max-width: 80px;
+  height: 5vw;
+  width: 5vw;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.modalBackground .addCheckDays .addDay.chosen {
+  background: #7aff6e;
 }
 .modalBackground .confirmDeleteModal {
   display: flex;
@@ -359,7 +384,7 @@ MODALS
   text-align: center;
 }
 .modalBackground .confirmDeleteModal .confirmationWindow > * {
-  margin: 2% 0;
+  margin: 5% 0;
 }
 .modalBackground .confirmDeleteModal .deletionButtons {
   text-align: center;
@@ -368,6 +393,10 @@ MODALS
 .modalBackground .routineNameDetails {
   display: flex;
   flex-direction: column;
+}
+.modalBackground .errorMessage {
+  color: #e13e3e;
+  font-style: italic;
 }
 
 /* ===========================================
@@ -380,6 +409,15 @@ ROUTINES
   justify-content: space-between;
   padding: 4% 2%;
 }
+.routineContainer .moreInfo {
+  position: fixed;
+  bottom: 7%;
+  right: 0;
+  background: white;
+  z-index: 30;
+  height: 30px;
+  width: 30px;
+}
 .routineContainer .addButton {
   position: absolute;
   bottom: 0%;
@@ -390,54 +428,73 @@ ROUTINES
   box-shadow: inset 0 0 2px 2px #000;
   background: #31d3fc;
 }
-.routineContainer .prompt {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+.routineContainer .promptContainer {
+  padding: 2% 0;
+}
+.routineContainer .promptContainer .prompt {
   text-align: center;
-  transform: translate(-50%, -50%);
 }
-.routineContainer .routineItem {
-  box-shadow: 0px 0px 2px 2px black;
+.routineContainer .routineDescription {
+  box-shadow: inset 0px 0px 2px 2px #000;
   border-radius: 5px;
-  display: grid;
-  grid-template-columns: 20% 8fr 1fr;
-  padding: 2%;
-  margin: 2% 0;
-}
-.routineContainer .routineItem .routineDetails {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-}
-.routineContainer .routineItem .delButton {
-  display: flex;
-  justify-content: flex-end;
-}
-.routineContainer .routineItem .delButton button {
-  color: white;
-  background: #e13e3e;
-  box-shadow: inset 0 0 2px 2px #000;
+  background: #e1f3fd;
+  padding: 5% 2%;
 }
 .routineContainer button {
-  cursor: pointer;
-  border: none;
-  box-shadow: inset 0 0 2px 2px grey;
-  border-radius: 25%;
   max-height: 80px;
   max-width: 80px;
   height: 5vw;
   width: 5vw;
+  border: none;
+  box-shadow: inset 0 0 2px 2px grey;
+  border-radius: 25%;
 }
 .routineContainer button.disabled {
   cursor: initial;
   box-shadow: none;
-  border-color: rgba(0, 0, 0, 0.2);
-  color: rgba(0, 0, 0, 0.2);
   background: #ffeae9;
 }
 .routineContainer button.chosen {
   background: #7aff6e;
+}
+
+.routineItem {
+  box-shadow: 0px 0px 2px 2px black;
+  border-radius: 5px;
+  padding: 2%;
+  margin: 2% 0;
+  display: flex;
+  flex-direction: column;
+}
+.routineItem .routineDetails {
+  display: grid;
+  grid-template-columns: 20% 8fr 1fr;
+}
+.routineItem .routineDetails .routineName {
+  display: flex;
+  align-items: center;
+  margin-right: 2%;
+}
+.routineItem .routineDetails .routineName p {
+  max-width: 100%;
+}
+.routineItem .routineDetails .routineChecks {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.routineItem .routineDetails .delButton {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+.routineItem .routineDetails .delButton button {
+  color: white;
+  background: #e13e3e;
+  box-shadow: inset 0 0 2px 2px #000;
+}
+.routineItem .routineDescription {
+  margin: 2% 0;
 }
 
 .dateSelect {
@@ -513,19 +570,24 @@ MEDIA
   .routineContainer .dateSelect .dates {
     width: 100%;
   }
-  .routineContainer .routineItem {
+
+  .routineItem .routineDetails {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  .routineContainer .routineItem > * {
+  .routineItem .routineDetails > * {
     margin: 2% 0;
   }
-  .routineContainer .routineItem .routineDetails {
+  .routineItem .routineDetails .routineName {
+    margin: 0;
+  }
+  .routineItem .routineDetails .routineChecks {
     width: 100%;
   }
 
   .modalBackground .modal .closeModal,
+.modalBackground .addCheckDays .addDay,
 .routineContainer button,
 .dateSelect p {
     height: 8vw;
@@ -538,7 +600,8 @@ MEDIA
     background: none;
     box-shadow: none;
   }
-  .routineContainer .routineItem .delButton button {
+
+  .routineItem .delButton button {
     color: #e13e3e;
     background: none;
     box-shadow: none;

@@ -7,8 +7,10 @@ const showDate = () => {
 
     const weekdays = [];
 
-    for (let i = 0; i < 7; i++) {
+    // since the days in a week never change a simple for loop is fine
+    for (let i = 0; i <= 6; i++) {
         
+        // Getting a full date string in the format to add to Firebase
         const dateYear = dayCounter.getFullYear();
         const dateMonth = (dayCounter.getMonth()+1).toString().padStart(2, '0');
         const dateDay = dayCounter.getDate().toString().padStart(2, '0');
@@ -20,11 +22,11 @@ const showDate = () => {
         const displayDateStrings = newDate.toDateString().split(' ');
         const displayDateString = displayDateStrings[0] + ' ' + displayDateStrings[2];
 
+        // sending perhaps extraneous data but it can be used in more than one instance in this case
         weekdays.push({fullDateString, displayDateString});
 
         dayCounter.setDate(dayCounter.getDate() + 1);
     }
-
 
     return weekdays;
 };

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import realtime from '../firebase.js';
 import { ref, push } from 'firebase/database';
-// import showDate from "../Functions/dateFunctions.js";
 
 // set a status for the edit modal as well. it can be the same one but just load from firebase instead
 const AddRoutine = ({ modalToggle }) => {
@@ -10,18 +9,11 @@ const AddRoutine = ({ modalToggle }) => {
     const [routineName, setRoutineName] = useState('');
     const [routineDescription, setRoutineDescription] = useState('');
 
-    // States for each of the day inputs
-    const [checkedDay1, setCheckedDay1] = useState(false);
-    const [checkedDay2, setCheckedDay2] = useState(false);
-    const [checkedDay3, setCheckedDay3] = useState(false);
-    const [checkedDay4, setCheckedDay4] = useState(false);
-    const [checkedDay5, setCheckedDay5] = useState(false);
-    const [checkedDay6, setCheckedDay6] = useState(false);
-    const [checkedDay7, setCheckedDay7] = useState(false);
-
-    // 
+    // Array for the user selected frequency
     const [checkedDays, setCheckedDays] = useState([]);
-    
+
+    // Holding error keywords for conditional rendering
+    const [error, setError] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -38,31 +30,31 @@ const AddRoutine = ({ modalToggle }) => {
             }
 
             push(dbRef, newRoutine);
-            // resetting the text area value by changing the state value
+            // resetting the state values for what happens next
             setRoutineDescription('');
             setRoutineName('');
+            setError('');
+
             // Closing the AddRoutine modal
             modalToggle();
 
-            // change to modals or something
         } else if (!routineName && checkedDays.length !== 0) {
-            alert(`Give your routine a name. You'll feel better if you do!`);
+            handleErrorStatus('name');
         } else if (routineName && checkedDays.length === 0) {
-            alert('Please select the days you wish to set for the routine');
+            handleErrorStatus('day');
         } else {
-            alert('What are you doing?');
+            handleErrorStatus('all');
         }
     };
 
     // Handling the various states for the checkboxes and what we will send to Firebase
-    const handleDayChange = (e, setDay, day) => {
-        const checked = e.target.checked;
-        setDay(checked);
+    const handleDayClick = (e) => {
+        e.target.classList.toggle('chosen');
 
         const dayValue = parseInt(e.target.value);
         let newDays = [];
 
-        if (checked) {
+        if (e.target.classList.contains('chosen')) {
             newDays = [...checkedDays, dayValue];
         } else {
             newDays = checkedDays.filter((day) => day !== dayValue);
@@ -71,12 +63,19 @@ const AddRoutine = ({ modalToggle }) => {
         setCheckedDays(newDays.sort());
     };
 
+    // Handling the change of the routine name - required
     const handleNameChange = (e) => {
         setRoutineName(e.target.value);
     };
 
+    // Handling the change of the description - not required
     const handleDescriptionChange = (e) => {
         setRoutineDescription(e.target.value);
+    }
+
+    // Handling the errors when adding a routine
+    const handleErrorStatus = (errorStatus) => {
+        setError(errorStatus);
     }
 
     return (
@@ -92,29 +91,28 @@ const AddRoutine = ({ modalToggle }) => {
                         <input type="text" id="routineName" maxLength="25" onChange={handleNameChange} value={routineName} />
                     </fieldset>
 
+                    {error === 'name' && <p className="errorMessage">Give your routine a name. You'll feel better if you do!</p>}
+
                     <fieldset className="routineDescriptionDetails">
                         <label htmlFor="routineDescription">Description</label>
-                        <textarea id="routineDescription" maxLength="200" onChange={handleDescriptionChange} value={routineDescription}/>
+                        <textarea id="routineDescription" maxLength="200" onChange={handleDescriptionChange} value={routineDescription} />
                     </fieldset>
 
-                    <fieldset>
-                        <label htmlFor="Sun">S</label>
-                        <input onChange={(e) => handleDayChange(e, setCheckedDay1, checkedDay1)} type="checkbox" name="daysOfWeek" id="Sun" checked={checkedDay1} value={0} />
-                        <label htmlFor="Mon">M</label>
-                        <input onChange={(e) => handleDayChange(e, setCheckedDay2, checkedDay2)} type="checkbox" name="daysOfWeek" id="Mon" checked={checkedDay2} value={1} />
-                        <label htmlFor="Tue">T</label>
-                        <input onChange={(e) => handleDayChange(e, setCheckedDay3, checkedDay3)} type="checkbox" name="daysOfWeek" id="Tues" checked={checkedDay3} value={2} />
-                        <label htmlFor="Wed">W</label>
-                        <input onChange={(e) => handleDayChange(e, setCheckedDay4, checkedDay4)} type="checkbox" name="daysOfWeek" id="Wed" checked={checkedDay4} value={3} />
-                        <label htmlFor="Thu">T</label>
-                        <input onChange={(e) => handleDayChange(e, setCheckedDay5, checkedDay5)} type="checkbox" name="daysOfWeek" id="Thu" checked={checkedDay5} value={4} />
-                        <label htmlFor="Fri">F</label>
-                        <input onChange={(e) => handleDayChange(e, setCheckedDay6, checkedDay6)} type="checkbox" name="daysOfWeek" id="Fri" checked={checkedDay6} value={5} />
-                        <label htmlFor="Sat">S</label>
-                        <input onChange={(e) => handleDayChange(e, setCheckedDay7, checkedDay7)} type="checkbox" name="daysOfWeek" id="Sat" checked={checkedDay7} value={6} />
-                    </fieldset>
+                    <div className="addCheckDays">
+                        {/* Made them type button to avoid submiting the form  */}
+                        <button type="button" className="addDay" value={0} onClick={handleDayClick}>S</button>
+                        <button type="button" className="addDay" value={1} onClick={handleDayClick}>M</button>
+                        <button type="button" className="addDay" value={2} onClick={handleDayClick}>T</button>
+                        <button type="button" className="addDay" value={3} onClick={handleDayClick}>W</button>
+                        <button type="button" className="addDay" value={4} onClick={handleDayClick}>T</button>
+                        <button type="button" className="addDay" value={5} onClick={handleDayClick}>F</button>
+                        <button type="button" className="addDay" value={6} onClick={handleDayClick}>S</button>
+                    </div>
 
-                    <button type="submit">Add Routine</button>
+                    {error === 'day' && <p className="errorMessage">Please select the days you wish to set for the routine</p>}
+                    {error === 'all' && <p className="errorMessage">Please provide some input. That would be a good habit.</p>}
+
+                    <button className="modalOption" type="submit">Add Routine</button>
                 </form>
 
             </div>

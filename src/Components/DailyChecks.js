@@ -1,28 +1,41 @@
-const DailyChecks = ({ freq, completed }) => {
+import showDate from "../Functions/dateFunctions";
+
+const DailyChecks = (props) => {
+
+    const { freq, completed, routineID, updateRoutine } = props;
 
     const weekArray = [0, 1, 2, 3, 4, 5, 6];
+    const thisWeekDates = showDate().map((weekDate) => weekDate.fullDateString);
 
+    let toBeCompleted = [];
 
-    const completeRoutine = (e) => {
+    // Preparing the completed date to be passed back to the database
+    const toComplete = (e, routineDate) => {
         e.target.classList.toggle('chosen');
+
+        if (e.target.classList.contains('chosen')) {
+            toBeCompleted = [...completed, routineDate];
+        } else {
+            toBeCompleted = completed.filter((day) => day !== routineDate);
+        }
+
+        updateRoutine(toBeCompleted, routineID);
     };
 
     return (
-        weekArray.map((day) => {
+        weekArray.map((day, index) => {
 
-            // ${completed.includes()}
             return (
-                <button key={`day${day}`} className=
-                    {`dailyCheck ${freq.includes(day) ? '' : 'disabled'} `}
+                // this nested ternary is pretty nifty to append class names
+                <button key={`day${day}${routineID}`} className=
+                    {`dailyCheck ${freq.includes(day) ?
+                        (completed.includes(thisWeekDates[index]) ? ' chosen': '') :
+                        ' disabled'} 
+                    `}
                     disabled={freq.includes(day) ? false : true}
-                    value={day}
-                    onClick={(e) => completeRoutine(e)}
+                    value={thisWeekDates[index]}
+                    onClick={(e) => toComplete(e, thisWeekDates[index])}
                 ></button>
-
-// add in so that it adds the date to the state and then to the completed 
-
-// setCompleted ([...routine.completed, dateString])
-
             )
         })
     );

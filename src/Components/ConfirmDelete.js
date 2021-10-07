@@ -10,8 +10,8 @@ const ConfirmDelete = ({ modalToggle, deleteRoutine }) => {
                     <p>Are you sure you wish to delete?</p>
                     <p>Routine deletion is permanent</p>
                     <div className="deletionButtons">
-                        <button onClick={deleteRoutine}>Delete</button>
-                        <button onClick={modalToggle}>Cancel</button>
+                        <button className="modalOption" onClick={deleteRoutine}>Delete</button>
+                        <button className="modalOption" onClick={modalToggle}>Cancel</button>
                     </div>
                 </div>
             </div>
