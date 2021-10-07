@@ -7,14 +7,11 @@ import AddRoutine from './Components/AddRoutine.js';
 import DailyChecks from './Components/DailyChecks.js';
 import ConfirmDelete from './Components/ConfirmDelete.js';
 
+
 // Stylings
 import './App.scss';
 
 function App() {
-
-  const today = new Date();
-
-  // const [selectedDay, setSelectedDay] = useState(today.getDay());
 
   const [routineList, setRoutineList] = useState([]);
 
@@ -23,12 +20,6 @@ function App() {
   const [toDelete, setToDelete] = useState('');
 
   // const [toComplete, setToComplete] = useState('');
-  // when click on the button => function
-  // function setCompleted([...completed, 'string']);
-  // 
-
-
-  // const [routineFrequency, setRoutineFrequency] = useState([]);
 
   // Running this useEffect only when the component mounts
   useEffect(() => {
@@ -67,6 +58,7 @@ function App() {
     delModal();
   };
 
+  // Modal open and close functions
   const addModal = () => {
     setAddRoutineOpen(!addRoutineOpen);
   }
@@ -103,8 +95,7 @@ function App() {
                 :
                 <div className="dateSelect">
                   <div className="dates">
-                    <DateSelect
-                      today={today} />
+                    <DateSelect />
 
                   </div>
                 </div>

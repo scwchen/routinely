@@ -1,10 +1,12 @@
 @import "./sass/setup";
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap");
 
 /* ===========================================
 VARIABLES
 =========================================== */
 $primary-color: #31d3fc;
+$secondary-color: #ffeae9;
+$complementary-color: #e13e3e;
 
 /* ===========================================
 MIXINS
@@ -23,6 +25,13 @@ MIXINS
     &::-webkit-scrollbar {
         display: none;
     }
+}
+
+@mixin buttonSize {
+    max-height: 80px;
+    max-width: 80px;
+    height: 5vw;
+    width: 5vw;
 }
 
 /* ===========================================
@@ -78,7 +87,7 @@ header {
     }
     h2 {
         margin: 3%;
-        font-family: 'Poppins', sans-serif;
+        font-family: "Poppins", sans-serif;
     }
 }
 
@@ -111,8 +120,7 @@ MODALS
         border: 2px solid black;
         border-radius: 10px;
         .closeModal {
-            height: 5vw;
-            width: 5vw;
+            @include buttonSize();
             border-radius: 25%;
             position: absolute;
             z-index: 20;
@@ -167,27 +175,20 @@ ROUTINES
 =========================================== */
 
 .routineContainer {
+    @include roundedBorder();
     position: relative;
     justify-content: space-between;
-    // box-shadow: inset 0px 0px 2px 2px rgb(0, 0, 0);
-    // border-radius: 5px;
-    @include roundedBorder();
     padding: 4% 2%;
 
     .addButton {
-        position: fixed;
-        bottom: 3%;
+        position: absolute;
+        bottom: 0%;
         left: 50%;
-
+        transform: translate(-50%, 50%);
         button {
-            height: 7vw;
-            width: 7vw;
-            background: $primary-color;
-            // color: white;
             box-shadow: inset 0 0 2px 2px #000;
+            background: $primary-color;
         }
-
-        transform: translate(-50%, -100%);
     }
 
     .prompt {
@@ -212,54 +213,66 @@ ROUTINES
             justify-content: space-between;
         }
 
-        .dailyCheck {
-            margin: 0 2%;
-        }
-
         .delButton {
             display: flex;
             justify-content: flex-end;
+
             button {
+                color: white;
+                background: $complementary-color;
                 box-shadow: inset 0 0 2px 2px #000;
             }
         }
     }
+
     button {
         cursor: pointer;
         border: none;
         box-shadow: inset 0 0 2px 2px grey;
         border-radius: 25%;
-        height: 5vw;
-        width: 5vw;
+        @include buttonSize();
+        // margin: 2% 0;
         &.disabled {
             cursor: initial;
             box-shadow: none;
             border-color: rgba(0, 0, 0, 0.2);
             color: rgba(0, 0, 0, 0.2);
-            background: rgba(255, 143, 135, 0.1);
+            background: $secondary-color;
         }
         &.chosen {
             background: #7aff6e;
-
-            // box-shadow: inset 0 0 2px 2px #175212;
         }
     }
 }
 
+// * {
+//     outline: 1px solid red;
+// }
+
 .dateSelect {
+    padding: 2%;
     display: grid;
     grid-template-columns: 20% 8fr 1fr;
 
     .dates {
+        box-shadow: 0px 0px 2px 2px #000;
+        border-radius: 5px;
+        background: $secondary-color;
         display: flex;
         flex-wrap: nowrap;
         justify-content: space-between;
         grid-column: 2 /3;
     }
     p {
+        @include buttonSize();
         display: flex;
-        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         padding: 1%;
+        span {
+            display: block;
+        }
     }
 }
 
@@ -277,12 +290,74 @@ footer {
     background: $primary-color;
 
     padding: 5px;
-    a {
-        text-decoration: none;
-        color: white;
-        text-shadow: 1px 1px 1px #000;
+    p {
+        text-align: center;
+        a {
+            text-decoration: none;
+            color: white;
+            text-shadow: 1px 1px 1px #000;
+        }
     }
 }
-// * {
-//     outline: 1px solid red;
-// }
+
+/* ===========================================
+MEDIA
+=========================================== */
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 900px) {
+    body {
+        font-size: 0.9rem;
+    }
+    header {
+        h1 {
+            font-size: 3rem;
+        }
+        h2 {
+            font-size: 1.1rem;
+        }
+    }
+    .routineContainer {
+        .dateSelect {
+            display: flex;
+            .dates {
+                width: 100%;
+                // background: none;
+                // box-shadow: none;
+            }
+        }
+        .routineItem {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            & > * {
+                margin: 2% 0;
+            }
+            .routineDetails {
+                width: 100%;
+            }
+        }
+    }
+
+    .modalBackground .modal .closeModal,
+    .routineContainer button,
+    .dateSelect p {
+        height: 8vw;
+        width: 8vw;
+    }
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
+    .routineContainer {
+        .dateSelect .dates {
+            background: none;
+            box-shadow: none;
+        }
+        .routineItem .delButton button {
+            color: $complementary-color;
+            background: none;
+            box-shadow: none;
+        }
+    }
+}

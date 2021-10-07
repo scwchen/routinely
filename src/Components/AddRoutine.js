@@ -1,6 +1,7 @@
 import { useState } from "react";
 import realtime from '../firebase.js';
 import { ref, push } from 'firebase/database';
+// import showDate from "../Functions/dateFunctions.js";
 
 // set a status for the edit modal as well. it can be the same one but just load from firebase instead
 const AddRoutine = ({ modalToggle }) => {
@@ -33,6 +34,7 @@ const AddRoutine = ({ modalToggle }) => {
                 routineName: routineName,
                 frequency: checkedDays,
                 completed: ["0000-00-00"],
+                description: routineDescription,
             }
 
             push(dbRef, newRoutine);

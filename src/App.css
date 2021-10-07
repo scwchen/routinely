@@ -317,6 +317,8 @@ MODALS
   border-radius: 10px;
 }
 .modalBackground .modal .closeModal {
+  max-height: 80px;
+  max-width: 80px;
   height: 5vw;
   width: 5vw;
   border-radius: 25%;
@@ -372,23 +374,21 @@ MODALS
 ROUTINES
 =========================================== */
 .routineContainer {
-  position: relative;
-  justify-content: space-between;
   box-shadow: inset 0px 0px 2px 2px #000;
   border-radius: 5px;
+  position: relative;
+  justify-content: space-between;
   padding: 4% 2%;
 }
 .routineContainer .addButton {
-  position: fixed;
-  bottom: 3%;
+  position: absolute;
+  bottom: 0%;
   left: 50%;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, 50%);
 }
 .routineContainer .addButton button {
-  height: 7vw;
-  width: 7vw;
-  background: #31d3fc;
   box-shadow: inset 0 0 2px 2px #000;
+  background: #31d3fc;
 }
 .routineContainer .prompt {
   position: absolute;
@@ -410,14 +410,13 @@ ROUTINES
   flex-wrap: nowrap;
   justify-content: space-between;
 }
-.routineContainer .routineItem .dailyCheck {
-  margin: 0 2%;
-}
 .routineContainer .routineItem .delButton {
   display: flex;
   justify-content: flex-end;
 }
 .routineContainer .routineItem .delButton button {
+  color: white;
+  background: #e13e3e;
   box-shadow: inset 0 0 2px 2px #000;
 }
 .routineContainer button {
@@ -425,6 +424,8 @@ ROUTINES
   border: none;
   box-shadow: inset 0 0 2px 2px grey;
   border-radius: 25%;
+  max-height: 80px;
+  max-width: 80px;
   height: 5vw;
   width: 5vw;
 }
@@ -433,26 +434,39 @@ ROUTINES
   box-shadow: none;
   border-color: rgba(0, 0, 0, 0.2);
   color: rgba(0, 0, 0, 0.2);
-  background: rgba(255, 143, 135, 0.1);
+  background: #ffeae9;
 }
 .routineContainer button.chosen {
   background: #7aff6e;
 }
 
 .dateSelect {
+  padding: 2%;
   display: grid;
   grid-template-columns: 20% 8fr 1fr;
 }
 .dateSelect .dates {
+  box-shadow: 0px 0px 2px 2px #000;
+  border-radius: 5px;
+  background: #ffeae9;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
   grid-column: 2/3;
 }
 .dateSelect p {
+  max-height: 80px;
+  max-width: 80px;
+  height: 5vw;
+  width: 5vw;
   display: flex;
-  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 1%;
+}
+.dateSelect p span {
+  display: block;
 }
 
 /* ===========================================
@@ -468,8 +482,65 @@ footer {
   background: #31d3fc;
   padding: 5px;
 }
-footer a {
+footer p {
+  text-align: center;
+}
+footer p a {
   text-decoration: none;
   color: white;
   text-shadow: 1px 1px 1px #000;
+}
+
+/* ===========================================
+MEDIA
+=========================================== */
+/* Landscape phone to portrait tablet */
+@media (max-width: 900px) {
+  body {
+    font-size: 0.9rem;
+  }
+
+  header h1 {
+    font-size: 3rem;
+  }
+  header h2 {
+    font-size: 1.1rem;
+  }
+
+  .routineContainer .dateSelect {
+    display: flex;
+  }
+  .routineContainer .dateSelect .dates {
+    width: 100%;
+  }
+  .routineContainer .routineItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .routineContainer .routineItem > * {
+    margin: 2% 0;
+  }
+  .routineContainer .routineItem .routineDetails {
+    width: 100%;
+  }
+
+  .modalBackground .modal .closeModal,
+.routineContainer button,
+.dateSelect p {
+    height: 8vw;
+    width: 8vw;
+  }
+}
+/* Landscape phones and down */
+@media (max-width: 480px) {
+  .routineContainer .dateSelect .dates {
+    background: none;
+    box-shadow: none;
+  }
+  .routineContainer .routineItem .delButton button {
+    color: #e13e3e;
+    background: none;
+    box-shadow: none;
+  }
 }/*# sourceMappingURL=App.css.map */
