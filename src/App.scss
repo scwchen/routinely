@@ -1,5 +1,29 @@
-@import './sass/setup';
+@import "./sass/setup";
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap');
 
+/* ===========================================
+VARIABLES
+=========================================== */
+$primary-color: #31d3fc;
+
+/* ===========================================
+MIXINS
+=========================================== */
+@mixin roundedBorder {
+    // border: 2px solid #000;
+    box-shadow: inset 0px 0px 2px 2px #000;
+    border-radius: 5px;
+}
+
+// used to hide scrollbars but still allow functionality
+@mixin hideScrollbars {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
 
 /* ===========================================
 GENERAL STYLINGS
@@ -7,11 +31,13 @@ GENERAL STYLINGS
 
 html {
     font-size: 125%;
+    word-wrap: break-word;
 }
 
 body {
     position: relative;
 }
+
 ul {
     list-style-type: none;
     padding: 0;
@@ -32,6 +58,9 @@ button {
     margin: 0;
 }
 
+fieldset {
+    border: none;
+}
 
 /* ===========================================
 HEADER
@@ -39,35 +68,18 @@ HEADER
 
 header {
     text-align: center;
-
-}
-
-/* ===========================================
-DATE SELECTOR
-=========================================== */
-
-.dateSelect {
-    box-shadow: inset 0px 0px 2px 2px rgb(0, 0, 0);
-    padding: 2%;
-    display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
-
-    .dates {
-        display: flex;
-        grid-column: 2 /3;
+    h1 {
+        margin: 5% 0;
+        font-family: "Pacifico", cursive;
+        font-size: 4rem;
+        font-weight: 100;
+        color: $primary-color;
+        text-shadow: 2px 2px 2px #000;
     }
-    p {
-        text-align: center;
-        cursor: pointer;
-        padding: 2%;
-        box-shadow: inset 0px 0px 2px 2px rgb(0, 0, 0);
+    h2 {
+        margin: 3%;
+        font-family: 'Poppins', sans-serif;
     }
-        
-
-    .chosen {
-        box-shadow: 0px 0px 1px 2px rgb(253, 0, 0);
-    }
-
 }
 
 /* ===========================================
@@ -79,91 +91,198 @@ MODALS
     padding: 10%;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    bottom: 0;
+    right: 0;
+    min-height: 100vh;
     background: rgba(0, 0, 0, 0.5);
 
-    .modal {
-        background: rgb(157, 206, 255);
-        padding: 5%;
+    z-index: 10;
 
+    .modal {
+        position: fixed;
+        top: 10%;
+        left: 10%;
+        right: 10%;
+
+        z-index: 10;
+        background: white;
+        padding: 5%;
 
         border: 2px solid black;
         border-radius: 10px;
-        
+        .closeModal {
+            height: 5vw;
+            width: 5vw;
+            border-radius: 25%;
+            position: absolute;
+            z-index: 20;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            background: rgb(157, 206, 255);
+            border: 2px solid #000;
+        }
+    }
+
+    .addRoutineModal {
+        height: 80%;
+        .addRoutineModalForm {
+            @include roundedBorder();
+            @include hideScrollbars();
+            max-height: 100%;
+        }
+
+        input {
+            width: 100%;
+        }
+        textarea {
+            width: 100%;
+            height: 30vh;
+            resize: none;
+        }
+    }
+
+    .confirmDeleteModal {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        .confirmationWindow > * {
+            margin: 2% 0;
+        }
+        .deletionButtons {
+            text-align: center;
+        }
+    }
+
+    .routineDescriptionDetails,
+    .routineNameDetails {
+        display: flex;
+        flex-direction: column;
     }
 }
-
 
 /* ===========================================
 ROUTINES
 =========================================== */
 
 .routineContainer {
-    
-    box-shadow: inset 0px 0px 2px 2px rgb(0, 0, 0);
-    padding: 2%;
+    position: relative;
+    justify-content: space-between;
+    // box-shadow: inset 0px 0px 2px 2px rgb(0, 0, 0);
+    // border-radius: 5px;
+    @include roundedBorder();
+    padding: 4% 2%;
 
-    
-    .routineItem  {
+    .addButton {
+        position: fixed;
+        bottom: 3%;
+        left: 50%;
+
+        button {
+            height: 7vw;
+            width: 7vw;
+            background: $primary-color;
+            // color: white;
+            box-shadow: inset 0 0 2px 2px #000;
+        }
+
+        transform: translate(-50%, -100%);
+    }
+
+    .prompt {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        text-align: center;
+        transform: translate(-50%, -50%);
+    }
+
+    .routineItem {
+        box-shadow: 0px 0px 2px 2px rgb(0, 0, 0);
+        border-radius: 5px;
         display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
+        grid-template-columns: 20% 8fr 1fr;
+        padding: 2%;
         margin: 2% 0;
 
+        .routineDetails {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+        }
 
         .dailyCheck {
             margin: 0 2%;
         }
-        .editButton {
+
+        .delButton {
             display: flex;
             justify-content: flex-end;
+            button {
+                box-shadow: inset 0 0 2px 2px #000;
+            }
         }
     }
     button {
         cursor: pointer;
         border: none;
         box-shadow: inset 0 0 2px 2px grey;
-        border-radius: 100%;
+        border-radius: 25%;
         height: 5vw;
         width: 5vw;
         &.disabled {
             cursor: initial;
             box-shadow: none;
             border-color: rgba(0, 0, 0, 0.2);
-            color:rgba(0, 0, 0, 0.2);
+            color: rgba(0, 0, 0, 0.2);
             background: rgba(255, 143, 135, 0.1);
         }
         &.chosen {
             background: #7aff6e;
+
+            // box-shadow: inset 0 0 2px 2px #175212;
         }
     }
-    // i {
-    //     width: 100%;
-    //     height: 100%;
-    //     display: flex;
-    //     justify-content: center;
-    //     align-items: center;
-    // }
-
 }
 
-// * {
-//     outline: 1px solid red;
-// }
+.dateSelect {
+    display: grid;
+    grid-template-columns: 20% 8fr 1fr;
+
+    .dates {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        grid-column: 2 /3;
+    }
+    p {
+        display: flex;
+        text-align: center;
+        padding: 1%;
+    }
+}
+
 /* ===========================================
 FOOTER
 =========================================== */
 
 footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgb(9, 165, 255);
-    color:white;
+    background: $primary-color;
 
     padding: 5px;
     a {
         text-decoration: none;
         color: white;
+        text-shadow: 1px 1px 1px #000;
     }
 }
+// * {
+//     outline: 1px solid red;
+// }

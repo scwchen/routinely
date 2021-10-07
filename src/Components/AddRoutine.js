@@ -5,8 +5,9 @@ import { ref, push } from 'firebase/database';
 // set a status for the edit modal as well. it can be the same one but just load from firebase instead
 const AddRoutine = ({ modalToggle }) => {
 
-    // State for the name of the routine
+    // State for the name and description of the routine
     const [routineName, setRoutineName] = useState('');
+    const [routineDescription, setRoutineDescription] = useState('');
 
     // States for each of the day inputs
     const [checkedDay1, setCheckedDay1] = useState(false);
@@ -17,9 +18,9 @@ const AddRoutine = ({ modalToggle }) => {
     const [checkedDay6, setCheckedDay6] = useState(false);
     const [checkedDay7, setCheckedDay7] = useState(false);
 
-    // State array to pass back to Firebase with the total
+    // 
     const [checkedDays, setCheckedDays] = useState([]);
-    // error handling if checked days is empty
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -36,6 +37,7 @@ const AddRoutine = ({ modalToggle }) => {
 
             push(dbRef, newRoutine);
             // resetting the text area value by changing the state value
+            setRoutineDescription('');
             setRoutineName('');
             // Closing the AddRoutine modal
             modalToggle();
@@ -57,6 +59,7 @@ const AddRoutine = ({ modalToggle }) => {
 
         const dayValue = parseInt(e.target.value);
         let newDays = [];
+
         if (checked) {
             newDays = [...checkedDays, dayValue];
         } else {
@@ -70,15 +73,27 @@ const AddRoutine = ({ modalToggle }) => {
         setRoutineName(e.target.value);
     };
 
+    const handleDescriptionChange = (e) => {
+        setRoutineDescription(e.target.value);
+    }
+
     return (
         <div className="modalBackground">
 
-            <div className="modal addEditRoutineModal">
-                <button onClick={modalToggle}>X</button>
+            <div className="modal addRoutineModal">
+                <button onClick={modalToggle} className="closeModal">X</button>
 
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="routineName">Routine Name</label>
-                    <input type="text" id="routineName" onChange={handleNameChange} value={routineName} />
+                <form className="addRoutineModalForm" onSubmit={handleSubmit}>
+
+                    <fieldset className="routineNameDetails">
+                        <label htmlFor="routineName">Name</label>
+                        <input type="text" id="routineName" maxLength="25" onChange={handleNameChange} value={routineName} />
+                    </fieldset>
+
+                    <fieldset className="routineDescriptionDetails">
+                        <label htmlFor="routineDescription">Description</label>
+                        <textarea id="routineDescription" maxLength="200" onChange={handleDescriptionChange} value={routineDescription}/>
+                    </fieldset>
 
                     <fieldset>
                         <label htmlFor="Sun">S</label>

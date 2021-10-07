@@ -1,6 +1,7 @@
 /* ===========================================
 SETUP
 =========================================== */
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins&display=swap");
 html {
   line-height: 1.15;
   -ms-text-size-adjust: 100%;
@@ -230,10 +231,17 @@ html {
 }
 
 /* ===========================================
+VARIABLES
+=========================================== */
+/* ===========================================
+MIXINS
+=========================================== */
+/* ===========================================
 GENERAL STYLINGS
 =========================================== */
 html {
   font-size: 125%;
+  word-wrap: break-word;
 }
 
 body {
@@ -260,34 +268,27 @@ button {
   margin: 0;
 }
 
+fieldset {
+  border: none;
+}
+
 /* ===========================================
 HEADER
 =========================================== */
 header {
   text-align: center;
 }
-
-/* ===========================================
-DATE SELECTOR
-=========================================== */
-.dateSelect {
-  box-shadow: inset 0px 0px 2px 2px black;
-  padding: 2%;
-  display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
+header h1 {
+  margin: 5% 0;
+  font-family: "Pacifico", cursive;
+  font-size: 4rem;
+  font-weight: 100;
+  color: #31d3fc;
+  text-shadow: 2px 2px 2px #000;
 }
-.dateSelect .dates {
-  display: flex;
-  grid-column: 2/3;
-}
-.dateSelect p {
-  text-align: center;
-  cursor: pointer;
-  padding: 2%;
-  box-shadow: inset 0px 0px 2px 2px black;
-}
-.dateSelect .chosen {
-  box-shadow: 0px 0px 1px 2px #fd0000;
+header h2 {
+  margin: 3%;
+  font-family: "Poppins", sans-serif;
 }
 
 /* ===========================================
@@ -298,41 +299,132 @@ MODALS
   padding: 10%;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  bottom: 0;
+  right: 0;
+  min-height: 100vh;
   background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }
 .modalBackground .modal {
-  background: #9dceff;
+  position: fixed;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  z-index: 10;
+  background: white;
   padding: 5%;
   border: 2px solid black;
   border-radius: 10px;
+}
+.modalBackground .modal .closeModal {
+  height: 5vw;
+  width: 5vw;
+  border-radius: 25%;
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  background: #9dceff;
+  border: 2px solid #000;
+}
+.modalBackground .addRoutineModal {
+  height: 80%;
+}
+.modalBackground .addRoutineModal .addRoutineModalForm {
+  box-shadow: inset 0px 0px 2px 2px #000;
+  border-radius: 5px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-y: scroll;
+  max-height: 100%;
+}
+.modalBackground .addRoutineModal .addRoutineModalForm::-webkit-scrollbar {
+  display: none;
+}
+.modalBackground .addRoutineModal input {
+  width: 100%;
+}
+.modalBackground .addRoutineModal textarea {
+  width: 100%;
+  height: 30vh;
+  resize: none;
+}
+.modalBackground .confirmDeleteModal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.modalBackground .confirmDeleteModal .confirmationWindow > * {
+  margin: 2% 0;
+}
+.modalBackground .confirmDeleteModal .deletionButtons {
+  text-align: center;
+}
+.modalBackground .routineDescriptionDetails,
+.modalBackground .routineNameDetails {
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===========================================
 ROUTINES
 =========================================== */
 .routineContainer {
-  box-shadow: inset 0px 0px 2px 2px black;
-  padding: 2%;
+  position: relative;
+  justify-content: space-between;
+  box-shadow: inset 0px 0px 2px 2px #000;
+  border-radius: 5px;
+  padding: 4% 2%;
+}
+.routineContainer .addButton {
+  position: fixed;
+  bottom: 3%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+}
+.routineContainer .addButton button {
+  height: 7vw;
+  width: 7vw;
+  background: #31d3fc;
+  box-shadow: inset 0 0 2px 2px #000;
+}
+.routineContainer .prompt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
 }
 .routineContainer .routineItem {
+  box-shadow: 0px 0px 2px 2px black;
+  border-radius: 5px;
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-columns: 20% 8fr 1fr;
+  padding: 2%;
   margin: 2% 0;
+}
+.routineContainer .routineItem .routineDetails {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 .routineContainer .routineItem .dailyCheck {
   margin: 0 2%;
 }
-.routineContainer .routineItem .editButton {
+.routineContainer .routineItem .delButton {
   display: flex;
   justify-content: flex-end;
+}
+.routineContainer .routineItem .delButton button {
+  box-shadow: inset 0 0 2px 2px #000;
 }
 .routineContainer button {
   cursor: pointer;
   border: none;
   box-shadow: inset 0 0 2px 2px grey;
-  border-radius: 100%;
+  border-radius: 25%;
   height: 5vw;
   width: 5vw;
 }
@@ -347,18 +439,37 @@ ROUTINES
   background: #7aff6e;
 }
 
+.dateSelect {
+  display: grid;
+  grid-template-columns: 20% 8fr 1fr;
+}
+.dateSelect .dates {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  grid-column: 2/3;
+}
+.dateSelect p {
+  display: flex;
+  text-align: center;
+  padding: 1%;
+}
+
 /* ===========================================
 FOOTER
 =========================================== */
 footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #09a5ff;
-  color: white;
+  background: #31d3fc;
   padding: 5px;
 }
 footer a {
   text-decoration: none;
   color: white;
+  text-shadow: 1px 1px 1px #000;
 }/*# sourceMappingURL=App.css.map */

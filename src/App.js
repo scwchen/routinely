@@ -1,12 +1,11 @@
 // Components and Modules
 import { useEffect, useState } from 'react';
 import realtime from './firebase.js';
-import { ref, onValue } from 'firebase/database';
-import deleteRoutine from './Functions/deleteRoutine.js';
+import { ref, onValue, remove } from 'firebase/database';
 import DateSelect from './Components/DateSelect.js';
 import AddRoutine from './Components/AddRoutine.js';
 import DailyChecks from './Components/DailyChecks.js';
-
+import ConfirmDelete from './Components/ConfirmDelete.js';
 
 // Stylings
 import './App.scss';
@@ -19,7 +18,15 @@ function App() {
 
   const [routineList, setRoutineList] = useState([]);
 
-  const [addRoutineOpen, setaddRoutineOpen] = useState(false);
+  const [addRoutineOpen, setAddRoutineOpen] = useState(false);
+  const [deleteRoutineOpen, setDeleteRoutineOpen] = useState(false);
+  const [toDelete, setToDelete] = useState('');
+
+  // const [toComplete, setToComplete] = useState('');
+  // when click on the button => function
+  // function setCompleted([...completed, 'string']);
+  // 
+
 
   // const [routineFrequency, setRoutineFrequency] = useState([]);
 
@@ -50,16 +57,23 @@ function App() {
 
   }, []); // end of useEffect
 
-  const selectDate = (selectedDate) => {
-    // setSelectedDay(selectedDate.value);
-    // console.log(selectedDay);
 
+  // Function to delete routine from the database
+  const deleteRoutine = () => {
+    const specificNodeRef = ref(realtime, toDelete);
+
+    remove(specificNodeRef);
+
+    delModal();
   };
 
-  const routineModal = () => {
-    setaddRoutineOpen(!addRoutineOpen);
+  const addModal = () => {
+    setAddRoutineOpen(!addRoutineOpen);
   }
 
+  const delModal = () => {
+    setDeleteRoutineOpen(!deleteRoutineOpen);
+  }
 
   return (
     <div className="App">
@@ -67,74 +81,86 @@ function App() {
 
         <header>
           <h1>Routinely</h1>
+          <h2>Make it a habit</h2>
         </header>
         <main>
 
-          <div className="dateSelect">
-            <div className="dates">
-              <DateSelect
-                selectDate={selectDate}
-                today={today} />
+          {addRoutineOpen && <AddRoutine modalToggle={addModal} />}
+          {deleteRoutineOpen && <ConfirmDelete modalToggle={delModal} deleteRoutine={deleteRoutine} />}
 
-            </div>
-          </div>
-          <ul className="routineContainer">
+          <section className="routineContainer">
 
-
-            {/* Modal for Adding Routines */}
-            {addRoutineOpen && <AddRoutine modalToggle={routineModal} />}
 
             {/* Button to Add a new routine */}
-            <li className="addButton">
-              <button onClick={routineModal}>+</button>
-            </li>
+            <div className="addButton">
+              <button onClick={addModal}>+</button>
+            </div>
+
+            {
+              routineList.length === 0 ?
+
+                <p className="prompt">Start with just one habit</p>
+                :
+                <div className="dateSelect">
+                  <div className="dates">
+                    <DateSelect
+                      today={today} />
+
+                  </div>
+                </div>
+            }
+
 
             {
               routineList.map((individualRoutine) => {
-                const { key, routine } = individualRoutine
+                const { key, routine } = individualRoutine;
 
+                // console.log(individualRoutine);
                 return (
-                  <li key={key} className="routineItem">
-
-
-                    {/* <input type="checkbox" id={key} /> */}
-                    {/* <label htmlFor={key}>{routine.routineName}</label> */}
+                  <div key={key} className="routineItem">
 
                     <div className="routineName">
                       <p>{routine.routineName}</p>
-
                     </div>
 
                     <div className="routineDetails">
-                      <DailyChecks freq={routine.frequency} />
-                    </div>
-                    <div className="editButton">
-
-                      <button onClick={() => deleteRoutine(key)}><i className="far fa-trash-alt"></i></button>
+                      <DailyChecks
+                        freq={routine.frequency}
+                        completed={routine.completed} />
                     </div>
 
 
-                  </li>
+                    {/* Adding a delete button for each routine */}
+                    <div className="delButton">
+
+                      <button value={toDelete} onClick={() => {
+                        delModal();
+                        setToDelete(key);
+
+                      }}><i className="far fa-trash-alt"></i></button>
+
+                    </div>
+
+
+                  </div>
 
                 )
               })
 
             }
 
+          </section> {/* end of routineContainer */}
 
-
-
-          </ul>
-
-        </main>
-        <footer>
-          <p>Created by
-            <a href="https://github.com/scwchen" target="_blank" rel="noreferrer"> Steven Chen at</a>
-            <a href="https://junocollege.com/" target="_blank" rel="noreferrer"> Juno College</a> 2021
-          </p>
-        </footer>
+        </main> {/* end of main */}
       </div> {/* end of wrapper */}
 
+      <footer>
+        <p>Created by
+          <a href="https://github.com/scwchen" target="_blank" rel="noreferrer"> Steven Chen </a>
+          at
+          <a href="https://junocollege.com/" target="_blank" rel="noreferrer"> Juno College</a> 2021
+        </p>
+      </footer>
     </div>
   );
 }
