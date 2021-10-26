@@ -1,7 +1,15 @@
 // Components and Modules
 import { useEffect, useState } from 'react';
 import { ref, onValue, update, remove } from 'firebase/database';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from 'firebase/auth';
+
 import realtime from './firebase.js';
+import { auth } from './firebase.js';
 import DateSelect from './Components/DateSelect.js';
 import AddRoutine from './Components/AddRoutine.js';
 import DailyChecks from './Components/DailyChecks.js';
@@ -18,6 +26,14 @@ function App() {
   const [deleteRoutineOpen, setDeleteRoutineOpen] = useState(false);
   const [toDelete, setToDelete] = useState('');
   const [descriptionOpen, setDescriptionOpen] = useState(false);
+
+  // Setting up user states for authentication
+  const [regEmail, setRegEmail] = useState('');
+  const [regPass, setRegPass] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPass, setLoginPass] = useState('');
+
+  const [user, setUser] = useState({});
 
   // Running this useEffect only when the component mounts
   useEffect(() => {
@@ -46,8 +62,9 @@ function App() {
   }, []); // end of useEffect
 
 
-
+  // ===========================================
   // Function to delete routine from the database
+  // ===========================================
   const deleteRoutine = () => {
     const specificNodeRef = ref(realtime, toDelete);
 
@@ -56,7 +73,9 @@ function App() {
     delModal();
   };
 
+  // ===========================================
   // Function to update the routine in the database with completions
+  // ===========================================
   const updateRoutine = (completed, refID) => {
     const specificNodeRef = ref(realtime, refID);
 
@@ -69,7 +88,9 @@ function App() {
   };
 
 
+  // ===========================================
   // Modal open and close functions
+  // ===========================================
   const addModal = () => {
     setAddRoutineOpen(!addRoutineOpen);
   }
@@ -78,7 +99,9 @@ function App() {
     setDeleteRoutineOpen(!deleteRoutineOpen);
   }
 
+  // ===========================================
   // Toggle the description open and closed
+  // ===========================================
   const toggleDescription = () => {
     setDescriptionOpen(!descriptionOpen);
   };
@@ -165,7 +188,8 @@ function App() {
                         <p>Description: {routine.description}</p>
                       </div>}
 
-                  </div>
+                  </div> // end of routineItem
+                  
 
                 )
               })
@@ -185,7 +209,7 @@ function App() {
           <a href="https://junocollege.com/" target="_blank" rel="noreferrer"> Juno College</a> 2021
         </p>
       </footer>
-    </div>     // end of App
+    </div> // end of App
 
   );
 }

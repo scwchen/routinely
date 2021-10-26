@@ -4,6 +4,9 @@ import { initializeApp } from 'firebase/app';
 // Import the function to pull in the Firebase realtime database service.
 import { getDatabase } from 'firebase/database';
 
+// Import the function for email/password authorization
+import {getAuth} from 'firebase/auth';
+
 // Routinely - Web app firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyBKtbWGP_3j-_PWaw1pLoJfe07mLNLKCdY",
@@ -17,6 +20,9 @@ const firebaseConfig = {
 
 // Initialize Firebase app
 const app = initializeApp(firebaseConfig);
+
+// Initialize Firebase authentication
+export const auth = getAuth(app);
 
 // Go get the realtime database service
 const realtime = getDatabase(app);
