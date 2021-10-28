@@ -28,7 +28,7 @@ const DailyChecks = (props) => {
             return (
                 // this nested ternary is pretty nifty to append class names
                 <button key={`day${day}${routineID}`} className=
-                    {`dailyCheck ${freq.includes(day) ?
+                    {`daily-check ${freq.includes(day) ?
                         (completed.includes(thisWeekDates[index]) ? ' chosen': '') :
                         ' disabled'} 
                     `}

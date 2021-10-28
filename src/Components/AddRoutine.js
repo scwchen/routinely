@@ -3,7 +3,7 @@ import realtime from '../firebase.js';
 import { ref, push } from 'firebase/database';
 
 // set a status for the edit modal as well. it can be the same one but just load from firebase instead
-const AddRoutine = ({ modalToggle }) => {
+const AddRoutine = ({ modalToggle, user }) => {
 
     // State for the name and description of the routine
     const [routineName, setRoutineName] = useState('');
@@ -20,7 +20,7 @@ const AddRoutine = ({ modalToggle }) => {
 
         if (routineName && checkedDays.length !== 0) {
 
-            const dbRef = ref(realtime);
+            const dbRef = ref(realtime, user);
 
             const newRoutine = {
                 routineName: routineName,
@@ -29,6 +29,7 @@ const AddRoutine = ({ modalToggle }) => {
                 description: routineDescription,
             }
 
+            console.log(dbRef);
             push(dbRef, newRoutine);
             // resetting the state values for what happens next
             setRoutineDescription('');
@@ -79,40 +80,40 @@ const AddRoutine = ({ modalToggle }) => {
     }
 
     return (
-        <div className="modalBackground">
+        <div className="modal-background">
 
-            <div className="modal addRoutineModal">
-                <button onClick={modalToggle} className="closeModal">X</button>
+            <div className="modal add-routine-modal">
+                <button onClick={modalToggle} className="close-modal">X</button>
 
-                <form className="addRoutineModalForm" onSubmit={handleSubmit}>
+                <form className="add-routine-modal-form" onSubmit={handleSubmit}>
 
-                    <fieldset className="routineNameDetails">
-                        <label htmlFor="routineName">Name</label>
-                        <input type="text" id="routineName" maxLength="25" onChange={handleNameChange} value={routineName} />
+                    <fieldset className="routine-name-details">
+                        <label htmlFor="routine-name">Name</label>
+                        <input type="text" id="routine-name" maxLength="25" onChange={handleNameChange} value={routineName} />
                     </fieldset>
 
-                    {error === 'name' && <p className="errorMessage">Give your routine a name. You'll feel better if you do!</p>}
+                    {error === 'name' && <p className="error-message">Give your routine a name. You'll feel better if you do!</p>}
 
-                    <fieldset className="routineDescriptionDetails">
-                        <label htmlFor="routineDescription">Description</label>
-                        <textarea id="routineDescription" maxLength="200" onChange={handleDescriptionChange} value={routineDescription} />
+                    <fieldset className="routine-description-details">
+                        <label htmlFor="routine-description">Description</label>
+                        <textarea id="routine-description" maxLength="200" onChange={handleDescriptionChange} value={routineDescription} />
                     </fieldset>
 
-                    <div className="addCheckDays">
+                    <div className="add-check-days">
                         {/* Made them type button to avoid submiting the form  */}
-                        <button type="button" className="addDay" value={0} onClick={handleDayClick}>S</button>
-                        <button type="button" className="addDay" value={1} onClick={handleDayClick}>M</button>
-                        <button type="button" className="addDay" value={2} onClick={handleDayClick}>T</button>
-                        <button type="button" className="addDay" value={3} onClick={handleDayClick}>W</button>
-                        <button type="button" className="addDay" value={4} onClick={handleDayClick}>T</button>
-                        <button type="button" className="addDay" value={5} onClick={handleDayClick}>F</button>
-                        <button type="button" className="addDay" value={6} onClick={handleDayClick}>S</button>
+                        <button type="button" className="add-day" value={0} onClick={handleDayClick}>S</button>
+                        <button type="button" className="add-day" value={1} onClick={handleDayClick}>M</button>
+                        <button type="button" className="add-day" value={2} onClick={handleDayClick}>T</button>
+                        <button type="button" className="add-day" value={3} onClick={handleDayClick}>W</button>
+                        <button type="button" className="add-day" value={4} onClick={handleDayClick}>T</button>
+                        <button type="button" className="add-day" value={5} onClick={handleDayClick}>F</button>
+                        <button type="button" className="add-day" value={6} onClick={handleDayClick}>S</button>
                     </div>
 
-                    {error === 'day' && <p className="errorMessage">Please select the days you wish to set for the routine</p>}
-                    {error === 'all' && <p className="errorMessage">Please provide some input. That would be a good habit.</p>}
+                    {error === 'day' && <p className="error-message">Please select the days you wish to set for the routine</p>}
+                    {error === 'all' && <p className="error-message">Please provide some input. That would be a good habit.</p>}
 
-                    <button className="modalOption" type="submit">Add Routine</button>
+                    <button className="modal-option" type="submit">Add Routine</button>
                 </form>
 
             </div>

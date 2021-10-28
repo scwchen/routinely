@@ -5,7 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
 
 // Import the function for email/password authorization
-import {getAuth} from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
 // Routinely - Web app firebase configuration
 const firebaseConfig = {

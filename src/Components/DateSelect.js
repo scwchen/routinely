@@ -8,7 +8,7 @@ const DateSelect = () => {
             const dateIndex = `day${index}`;
 
             return (
-                <div className="dateItem" key={dateIndex}>
+                <div className="date-item" key={dateIndex}>
                     <p>{dow.displayDateString.slice(0, 3)} <span>{dow.displayDateString.slice(-2)}</span></p>
                 </div>
             );

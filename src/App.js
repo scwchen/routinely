@@ -1,22 +1,19 @@
 // Components and Modules
 import { useEffect, useState } from 'react';
 import { ref, onValue, update, remove } from 'firebase/database';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from 'firebase/auth';
-
-import realtime from './firebase.js';
 import { auth } from './firebase.js';
+import { signOut } from 'firebase/auth';
+import realtime from './firebase.js';
+
 import DateSelect from './Components/DateSelect.js';
 import AddRoutine from './Components/AddRoutine.js';
 import DailyChecks from './Components/DailyChecks.js';
 import ConfirmDelete from './Components/ConfirmDelete.js';
+import Footer from './Components/Footer';
 
 // Stylings
 import './App.scss';
+import Login from './Components/Login.js';
 
 function App() {
 
@@ -27,63 +24,67 @@ function App() {
   const [toDelete, setToDelete] = useState('');
   const [descriptionOpen, setDescriptionOpen] = useState(false);
 
-  // Setting up user states for authentication
-  const [regEmail, setRegEmail] = useState('');
-  const [regPass, setRegPass] = useState('');
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPass, setLoginPass] = useState('');
-
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [loggedOut, setLoggedOut] = useState(true);
 
   // Running this useEffect only when the component mounts
   useEffect(() => {
-    const dbRef = ref(realtime);
 
-    // We grab a snapshot of our database and use the .val method to parse the JSON object that is our database data out of it
-    onValue(dbRef, (snapshot) => {
+    if (user !== '') {
+      const dbRef = ref(realtime, user);
+      setLoggedOut(false);
+      // We grab a snapshot of our database and use the .val method to parse the JSON object that is our database data out of it
+      onValue(dbRef, (snapshot) => {
+        const myRoutines = snapshot.val();
+        console.log(myRoutines);
 
-      const myRoutines = snapshot.val();
+        const newRoutineArray = [];
 
-      const newRoutineArray = [];
+        for (let propName in myRoutines) {
+          const routineItem = {
+            key: propName,
+            routine: myRoutines[propName]
+          };
 
-      for (let propName in myRoutines) {
-        const routineItem = {
-          key: propName,
-          routine: myRoutines[propName]
+          newRoutineArray.push(routineItem);
         };
 
-        newRoutineArray.push(routineItem);
-      };
+        // console.log(newRoutineArray);
+        setRoutineList(newRoutineArray);
 
-      setRoutineList(newRoutineArray);
+      });
+    }
 
-    });
-
-  }, []); // end of useEffect
+  }, [user]); // end of useEffect
 
 
   // ===========================================
   // Function to delete routine from the database
   // ===========================================
   const deleteRoutine = () => {
-    const specificNodeRef = ref(realtime, toDelete);
+    if (user !== '') {
+      const specificNodeRef = ref(realtime, `${user}/${toDelete}`);
 
-    remove(specificNodeRef);
+      remove(specificNodeRef);
 
-    delModal();
+      delModal();
+    }
   };
 
   // ===========================================
   // Function to update the routine in the database with completions
   // ===========================================
   const updateRoutine = (completed, refID) => {
-    const specificNodeRef = ref(realtime, refID);
+    if (user !== '') {
+      const specificNodeRef = ref(realtime, `${user}/${refID}`);
 
-    const newCompleted = {
-      completed: completed
+      const newCompleted = {
+        completed: completed
+      }
+
+      update(specificNodeRef, newCompleted);
     }
-
-    update(specificNodeRef, newCompleted);
 
   };
 
@@ -106,7 +107,21 @@ function App() {
     setDescriptionOpen(!descriptionOpen);
   };
 
+
+  // ===========================================
+  // Logging user out
+  // ===========================================
+  const userLogout = async () => {
+    await signOut(auth);
+    setUser('');
+    setUserEmail('');
+    setLoggedOut(true);
+  };
+
+
+  // Main Return
   return (
+
     <div className="App">
       <div className="wrapper">
 
@@ -116,100 +131,113 @@ function App() {
         </header>
         <main>
 
+          {
+            loggedOut === false ?
 
+              <div className="routine-container">
+                {/* Adding the Add and Delete modals but only rendering when needed */}
+                {addRoutineOpen && <AddRoutine
+                  modalToggle={addModal}
+                  user={user}
+                />}
+                {deleteRoutineOpen && <ConfirmDelete modalToggle={delModal} deleteRoutine={deleteRoutine} />}
 
-          {/* Adding the Add and Delete modals but only rendering when needed */}
-          {addRoutineOpen && <AddRoutine modalToggle={addModal} />}
-          {deleteRoutineOpen && <ConfirmDelete modalToggle={delModal} deleteRoutine={deleteRoutine} />}
-
-          <section className="routineContainer">
-
-            {/* Button to Add a new routine */}
-            <div className="addButton">
-              <button onClick={addModal}><i className="fas fa-plus"></i></button>
-            </div>
-
-            {/* Debating whether I should use a button or not */}
-            <button className="moreInfo" onClick={toggleDescription}>
-              <i className="fas fa-info"></i>
-            </button>
-
-            {
-              routineList.length === 0 ?
-                <div className="promptContainer">
-                  <p className="prompt">Start with just one habit</p>
+                <div className="user-status">
+                  <p>User: {userEmail ? userEmail : null}</p>
+                  <button onClick={userLogout}>Log Out</button>
                 </div>
-                :
-                <div className="dateSelect">
-                  <div className="dates">
-                    <DateSelect />
-                  </div>
+
+                {/* Button to Add a new routine */}
+                <div className="add-button">
+                  <button onClick={addModal}><i className="fas fa-plus"></i></button>
                 </div>
-            }
 
+                {/* Debating whether I should use a button or not */}
+                <button className="more-info" onClick={toggleDescription}>
+                  <i className="fas fa-info"></i>
+                </button>
 
-            {
-              routineList.map((individualRoutine) => {
-                const { key, routine } = individualRoutine;
-
-                return (
-                  <div key={key} className="routineItem">
-
-                    <div className="routineDetails">
-                      <div className="routineName">
-                        <p >{routine.routineName}</p>
-                      </div>
-
-                      <div className="routineChecks">
-                        {/* Adding the checkboxes for each date */}
-                        <DailyChecks
-                          freq={routine.frequency}
-                          completed={routine.completed}
-                          routineID={key}
-                          updateRoutine={updateRoutine} />
-                      </div>
-
-
-                      {/* Adding a delete button for each routine */}
-                      <div className="delButton">
-
-                        <button value={toDelete} onClick={() => {
-                          delModal();
-                          setToDelete(key);
-
-                        }}><i className="far fa-trash-alt"></i></button>
-
+                {
+                  routineList.length === 0 ?
+                    <div className="prompt-container">
+                      <p className="prompt">Start with just one habit</p>
+                    </div>
+                    :
+                    <div className="date-select">
+                      <div className="dates">
+                        <DateSelect />
                       </div>
                     </div>
+                }
 
-                    {/* Toggle descriptions  */}
-                    {descriptionOpen === true &&
-                      <div className="routineDescription">
-                        <p>Description: {routine.description}</p>
-                      </div>}
 
-                  </div> // end of routineItem
-                  
+                {
+                  routineList.map((individualRoutine) => {
+                    const { key, routine } = individualRoutine;
 
-                )
-              })
+                    return (
+                      <div key={key} className="routine-item">
 
-            }
+                        <div className="routine-details">
+                          <div className="routine-name">
+                            <p >{routine.routineName}</p>
+                          </div>
 
-          </section> {/* end of routineContainer */}
+                          <div className="routine-checks">
+                            {/* Adding the checkboxes for each date */}
+                            <DailyChecks
+                              freq={routine.frequency}
+                              completed={routine.completed}
+                              routineID={key}
+                              updateRoutine={updateRoutine} />
+                          </div>
+
+
+                          {/* Adding a delete button for each routine */}
+                          <div className="del-button">
+
+                            <button value={toDelete} onClick={() => {
+                              delModal();
+                              setToDelete(key);
+
+                            }}><i className="far fa-trash-alt"></i></button>
+
+                          </div>
+                        </div>
+
+                        {/* Toggle descriptions  */}
+                        {descriptionOpen === true &&
+                          <div className="routine-description">
+                            <p>Description: {routine.description}</p>
+                          </div>}
+
+                      </div> // end of routineItem
+
+
+                    )
+                  })
+
+                }
+
+              </div>
+              // end of routineContainer 
+              :
+              <Login
+                setUser={setUser}
+                setUserEmail={setUserEmail}
+                setLoggedOut={setLoggedOut}
+                auth={auth}
+                signOut={signOut}
+              />
+          }
 
         </main> {/* end of main */}
 
       </div> {/* end of wrapper */}
 
-      <footer>
-        <p>Created by
-          <a href="https://github.com/scwchen" target="_blank" rel="noreferrer"> Steven Chen </a>
-          at
-          <a href="https://junocollege.com/" target="_blank" rel="noreferrer"> Juno College</a> 2021
-        </p>
-      </footer>
-    </div> // end of App
+      <Footer />
+    </div>     //  end of App 
+
 
   );
 }
