@@ -38,6 +38,10 @@ $pale-blue: #e1f3fd;
     width: 5vw;
 }
 
+@mixin wrapper-size {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 /* ===========================================
 GENERAL STYLINGS
 =========================================== */
@@ -60,8 +64,7 @@ ul {
 
 .wrapper {
     width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
+    @include wrapper-size();
     display: grid;
     grid-template-rows: 1fr auto 0.5fr;
 }
@@ -80,6 +83,26 @@ button {
 fieldset {
     border: none;
     margin: 0;
+}
+
+// Firefox
+* {
+    scrollbar-color: $primary-color $pale-blue;
+}
+
+// For Chrome, Edge, and Safari
+*::-webkit-scrollbar {
+    width: 1rem;
+}
+
+*::-webkit-scrollbar-track {
+    background: $pale-blue;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: $primary-color;
+    border-radius: 100vw;
+    border: 3px solid white;
 }
 
 /* ===========================================
@@ -156,105 +179,176 @@ MODALS
     right: 0;
     min-height: 100vh;
     background: rgba(0, 0, 0, 0.5);
-
     z-index: 10;
+}
 
-    .modal {
-        position: fixed;
-        top: 10%;
-        left: 10%;
-        right: 10%;
+.modal {
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    right: 10%;
+    z-index: 10;
+    background: white;
+    padding: 5%;
 
-        z-index: 10;
-        background: white;
-        padding: 5%;
+    @include rounded-border();
 
+    .add-routine-submit {
         @include rounded-border();
+        border: none;
+        margin-bottom: 1rem;
+        padding: 1rem;
+    }
+    .close-modal {
+        @include button-size();
+        border-radius: 25%;
+        position: absolute;
+        z-index: 20;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        background: rgb(157, 206, 255);
+        border: 2px solid #000;
+    }
+}
 
-        .modal-option {
-            @include rounded-border();
-            border: none;
-            margin: 3%;
-            padding: 3%;
-        }
-        .close-modal {
-            @include button-size();
-            border-radius: 25%;
-            position: absolute;
-            z-index: 20;
-            top: 0;
-            left: 0;
-            transform: translate(-50%, -50%);
-            background: rgb(157, 206, 255);
-            border: 2px solid #000;
-        }
+.add-routine-modal {
+    @include wrapper-size();
+    .add-routine-modal-form {
+        @include rounded-border();
+        @include hide-scrollbars();
+        max-height: 100%;
+        text-align: center;
     }
 
-    .add-routine-modal {
-        .add-routine-modal-form {
-            @include rounded-border();
-            @include hide-scrollbars();
-            max-height: 100%;
-            text-align: center;
-        }
-
-        input[type="text"],
-        textarea {
-            margin: 1% 0;
-            width: 100%;
-            border: 2px solid black;
-            border-radius: 5px;
-        }
-
-        textarea {
-            height: 20vh;
-            resize: none;
-        }
+    input[type="text"],
+    textarea {
+        margin: 1% 0;
+        width: 100%;
+        border: 2px solid black;
+        border-radius: 5px;
     }
 
-    .add-check-days {
+    textarea {
+        height: 20vh;
+        resize: none;
+    }
+}
+
+.add-check-days {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+
+    .add-day {
+        @include rounded-border();
+        @include button-size();
+
+        border: none;
+
         display: flex;
-        justify-content: space-between;
-        padding: 2%;
-
-        .add-day {
-            @include rounded-border();
-            @include button-size();
-
-            border: none;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            &.chosen {
-                background: $chosen-color;
-            }
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        &.chosen {
+            background: $chosen-color;
         }
     }
+}
 
-    .confirm-delete-modal {
+.confirm-delete-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    @include wrapper-size();
+    .confirmation-window > * {
+        margin: 5% 0;
+    }
+    .deletion-buttons {
+        text-align: center;
+
+        .delete-routine {
+            @include rounded-border();
+            margin: 1rem;
+            border: none;
+            padding: 1rem;
+        }
+    }
+}
+
+.routine-description-details,
+.routine-name-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.error-message {
+    color: $complementary-color;
+    font-style: italic;
+}
+
+/* ===========================================
+SIDE MENU
+=========================================== */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    background: $pale-blue;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    left: -250px;
+    z-index: 5;
+    -webkit-box-shadow: 2px 0px 2px 0px #000000;
+    box-shadow: 2px 0px 2px 0px #000000;
+    width: 250px;
+
+    transition: all 0.5s ease-in-out;
+    padding-top: 3rem;
+    &.open {
+        left: 0;
+    }
+    &.hidden {
+        display: none;
+    }
+    .user-settings {
+        width: 100%;
+        p {
+            font-size: 0.8rem;
+        }
         display: flex;
         flex-direction: column;
         align-items: center;
-        text-align: center;
-        .confirmation-window > * {
-            margin: 5% 0;
+        & > * {
+            margin: 3%;
         }
-        .deletion-buttons {
-            text-align: center;
+
+        .setting-button {
+            @include rounded-border();
+            border: none;
+            padding: 0.5rem;
+            width: 90%;
         }
     }
-
-    .routine-description-details,
-    .routine-name-details {
-        display: flex;
-        flex-direction: column;
+    .close-menu,
+    .open-menu {
+        background: none;
+        border: none;
+        position: absolute;
+        font-size: 2rem;
+        top: 0.5rem;
+        right: 1rem;
     }
-
-    .error-message {
-        color: $complementary-color;
-        font-style: italic;
+    .open-menu {
+        right: -3rem;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        &.hidden {
+            opacity: 0;
+        }
     }
 }
 
@@ -311,37 +405,6 @@ ROUTINES
     }
 }
 
-.user-settings {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    background: $pale-blue;
-    font-size: 0.8rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    right: 0;
-    z-index: 5;
-    -webkit-box-shadow: -2px 0px 2px 0px #000000;
-    box-shadow: -2px 0px 2px 0px #000000;
-    display: none;
-}
-
-.user-settings-button {
-    position: absolute;
-    background: none;
-    font-size: 2rem;
-    top: 1rem;
-    right: 1rem;
-    border: none;
-    &.button-close {
-        margin: 0 0.375rem;
-        top: 3rem;
-    }
-    i {
-        text-shadow: 0px 0px 4px #797979;
-    }
-}
 .routine-item {
     box-shadow: 0px 0px 2px 2px rgb(0, 0, 0);
     border-radius: 5px;
@@ -458,9 +521,31 @@ MEDIA
             font-size: 1.1rem;
         }
     }
+
     .login-screen {
         width: 80%;
     }
+
+    .side-menu {
+        .close-menu,
+        .open-menu {
+            font-size: 1.5rem;
+        }
+        .open-menu {
+            right: -2rem;
+        }
+    }
+
+    .modal .add-routine-submit,
+    .confirm-delete-modal .confirmation-window .delete-routine {
+        margin: 3%;
+        padding: 3%;
+    }
+
+    .add-check-days {
+        padding: 3%;
+    }
+
     .routine-container {
         .date-select {
             display: flex;
@@ -492,8 +577,8 @@ MEDIA
         }
     }
 
-    .modal-background .modal .close-modal,
-    .modal-background .add-check-days .add-day,
+    .modal .close-modal,
+    .add-check-days .add-day,
     .date-select p {
         @include button-size-900();
     }
@@ -506,6 +591,16 @@ MEDIA
     }
     .login-screen {
         width: 100%;
+    }
+
+    .side-menu {
+        .close-menu,
+        .open-menu {
+            font-size: 1.2rem;
+        }
+        .open-menu {
+            right: -1.7rem;
+        }
     }
 
     .routine-container {

@@ -28,6 +28,7 @@ function App() {
   const [userEmail, setUserEmail] = useState('');
   const [loggedOut, setLoggedOut] = useState(true);
 
+  const [menuOpen, setMenuOpen] = useState(false);
   // Running this useEffect only when the component mounts
   useEffect(() => {
 
@@ -37,7 +38,6 @@ function App() {
       // We grab a snapshot of our database and use the .val method to parse the JSON object that is our database data out of it
       onValue(dbRef, (snapshot) => {
         const myRoutines = snapshot.val();
-        console.log(myRoutines);
 
         const newRoutineArray = [];
 
@@ -50,7 +50,6 @@ function App() {
           newRoutineArray.push(routineItem);
         };
 
-        // console.log(newRoutineArray);
         setRoutineList(newRoutineArray);
 
       });
@@ -116,13 +115,14 @@ function App() {
     setUser('');
     setUserEmail('');
     setLoggedOut(true);
+    setMenuOpen(false);
   };
 
   // ===========================================
   // Handling the settings button click to open settings menu
   // ===========================================
-  const handleSettingsClick = (e) => {
-    e.target.classList.toggle('open');
+  const handleSettingsClick = () => {
+    setMenuOpen(!menuOpen);
   };
 
   // Main Return
@@ -139,9 +139,21 @@ function App() {
       />}
       {deleteRoutineOpen && <ConfirmDelete modalToggle={delModal} deleteRoutine={deleteRoutine} />}
 
-      <button className="user-settings-button button-open" onClick={handleSettingsClick} aria-label="Open user settings"><i className="fas fa-cog"></i></button>
-      <button className="user-settings-button button-close" onClick={handleSettingsClick} aria-label="Close user settings">
-        <i class="fas fa-chevron-right"></i></button>
+      {/* Side menu for user settings - will want to refactor into separate component */}
+      <div className={`side-menu ${menuOpen ? 'open' : ''} ${user === '' ? 'hidden' : ''}`}>
+        <button className={`open-menu ${menuOpen ? 'hidden' : ''}`} onClick={handleSettingsClick} aria-label="Open user settings" title="Open user settings"><i className="fas fa-cog"></i></button>
+        <button className="close-menu" onClick={handleSettingsClick} aria-label="Close user settings" title="Close user settings"><i className="fas fa-chevron-left"></i></button>
+        <div className="user-settings">
+          <h4>Username:</h4>
+          <p>{userEmail ? userEmail : null}</p>
+
+          <button className="user-logout setting-button" onClick={userLogout}>Log Out</button>
+          <button className="more-info setting-button" onClick={toggleDescription}>
+            Show Descriptions
+          </button>
+        </div>
+      </div>
+
 
 
       {/* End of Widgets and Modals */}
@@ -159,13 +171,7 @@ function App() {
 
               <div className="routine-container">
 
-                <div className="user-settings">
-                  <p>User: {userEmail ? userEmail : null}</p>
-                  <button className="user-logout" onClick={userLogout}>Log Out</button>
-                  <button className="more-info" onClick={toggleDescription}>
-                    Show Descriptions
-                  </button>
-                </div>
+
 
 
 
@@ -216,7 +222,7 @@ function App() {
                           {/* Adding a delete button for each routine */}
                           <div className="del-button-container">
 
-                            <button class="del-button" value={toDelete} onClick={() => {
+                            <button className="del-button" value={toDelete} onClick={() => {
                               delModal();
                               setToDelete(key);
 
@@ -256,7 +262,7 @@ function App() {
       </div> {/* end of wrapper */}
 
       <Footer />
-    </div>     //  end of App 
+    </div >     //  end of App 
 
 
   );

@@ -113,7 +113,7 @@ const AddRoutine = ({ modalToggle, user }) => {
                     {error === 'day' && <p className="error-message">Please select the days you wish to set for the routine</p>}
                     {error === 'all' && <p className="error-message">Please provide some input. That would be a good habit.</p>}
 
-                    <button className="modal-option" type="submit">Add Routine</button>
+                    <button className="add-routine-submit" type="submit">Add Routine</button>
                 </form>
 
             </div>
