@@ -15,13 +15,14 @@ $pale-blue: #e1f3fd;
 // MIXINS
 // ===========================================
 
-@mixin roundedBorder {
+@mixin rounded-border {
+    -webkit-box-shadow: inset 0px 0px 2px 2px #000;
     box-shadow: inset 0px 0px 2px 2px #000;
     border-radius: 5px;
 }
 
 // used to hide scrollbars but still allow functionality
-@mixin hideScrollbars {
+@mixin hide-scrollbars {
     -ms-overflow-style: none;
     scrollbar-width: none;
     overflow-y: scroll;
@@ -30,13 +31,17 @@ $pale-blue: #e1f3fd;
     }
 }
 
-@mixin buttonSize {
+@mixin button-size {
     max-height: 80px;
     max-width: 80px;
     height: 5vw;
     width: 5vw;
 }
 
+@mixin wrapper-size {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 /* ===========================================
 GENERAL STYLINGS
 =========================================== */
@@ -48,6 +53,7 @@ html {
 body {
     position: relative;
     word-wrap: break-word;
+    font-family: "Poppins", sans-serif;
 }
 
 ul {
@@ -58,10 +64,13 @@ ul {
 
 .wrapper {
     width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
+    @include wrapper-size();
     display: grid;
-    grid-template-rows: 1fr auto 1fr;
+    grid-template-rows: 1fr auto 0.5fr;
+}
+
+main {
+    position: relative;
 }
 
 button {
@@ -74,6 +83,68 @@ button {
 fieldset {
     border: none;
     margin: 0;
+}
+
+// Firefox
+* {
+    scrollbar-color: $primary-color $pale-blue;
+}
+
+// For Chrome, Edge, and Safari
+*::-webkit-scrollbar {
+    width: 1rem;
+}
+
+*::-webkit-scrollbar-track {
+    background: $pale-blue;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: $primary-color;
+    border-radius: 100vw;
+    border: 3px solid white;
+}
+
+/* ===========================================
+LOGIN
+=========================================== */
+
+.login-screen {
+    @include rounded-border();
+    background-color: $pale-blue;
+    padding: 10px;
+    width: 50%;
+    margin: 0 auto;
+    .input-container {
+        display: flex;
+        flex-direction: column;
+    }
+    button {
+        background-color: $primary-color;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .check-container {
+        display: flex;
+        input[type="checkbox"] {
+            margin: auto 10px auto 0;
+        }
+    }
+    .error-message {
+        color: rgb(212, 0, 0);
+    }
+}
+
+.reg-form {
+    & > * {
+        margin: 10px 0;
+    }
+}
+
+.login-form {
+    & > * {
+        margin: 10px 0;
+    }
 }
 
 /* ===========================================
@@ -92,7 +163,6 @@ header {
     }
     h2 {
         margin: 3%;
-        font-family: "Poppins", sans-serif;
     }
 }
 
@@ -100,7 +170,7 @@ header {
 MODALS
 =========================================== */
 
-.modalBackground {
+.modal-background {
     position: absolute;
     padding: 10%;
     top: 0;
@@ -109,105 +179,176 @@ MODALS
     right: 0;
     min-height: 100vh;
     background: rgba(0, 0, 0, 0.5);
-
     z-index: 10;
+}
 
-    .modal {
-        position: fixed;
-        top: 10%;
-        left: 10%;
-        right: 10%;
+.modal {
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    right: 10%;
+    z-index: 10;
+    background: white;
+    padding: 5%;
 
-        z-index: 10;
-        background: white;
-        padding: 5%;
+    @include rounded-border();
 
-        @include roundedBorder();
+    .add-routine-submit {
+        @include rounded-border();
+        border: none;
+        margin-bottom: 1rem;
+        padding: 1rem;
+    }
+    .close-modal {
+        @include button-size();
+        border-radius: 25%;
+        position: absolute;
+        z-index: 20;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        background: rgb(157, 206, 255);
+        border: 2px solid #000;
+    }
+}
 
-        .modalOption {
-            @include roundedBorder();
-            border: none;
-            margin: 3%;
-            padding: 3%;
-        }
-        .closeModal {
-            @include buttonSize();
-            border-radius: 25%;
-            position: absolute;
-            z-index: 20;
-            top: 0;
-            left: 0;
-            transform: translate(-50%, -50%);
-            background: rgb(157, 206, 255);
-            border: 2px solid #000;
-        }
+.add-routine-modal {
+    @include wrapper-size();
+    .add-routine-modal-form {
+        @include rounded-border();
+        @include hide-scrollbars();
+        max-height: 100%;
+        text-align: center;
     }
 
-    .addRoutineModal {
-        .addRoutineModalForm {
-            @include roundedBorder();
-            @include hideScrollbars();
-            max-height: 100%;
-            text-align: center;
-        }
-
-        input[type="text"],
-        textarea {
-            margin: 1% 0;
-            width: 100%;
-            border: 2px solid black;
-            border-radius: 5px;
-        }
-
-        textarea {
-            height: 20vh;
-            resize: none;
-        }
+    input[type="text"],
+    textarea {
+        margin: 1% 0;
+        width: 100%;
+        border: 2px solid black;
+        border-radius: 5px;
     }
 
-    .addCheckDays {
+    textarea {
+        height: 20vh;
+        resize: none;
+    }
+}
+
+.add-check-days {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+
+    .add-day {
+        @include rounded-border();
+        @include button-size();
+
+        border: none;
+
         display: flex;
-        justify-content: space-between;
-        padding: 2%;
-
-        .addDay {
-            @include roundedBorder();
-            @include buttonSize();
-
-            border: none;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            &.chosen {
-                background: $chosen-color;
-            }
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        &.chosen {
+            background: $chosen-color;
         }
     }
+}
 
-    .confirmDeleteModal {
+.confirm-delete-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    @include wrapper-size();
+    .confirmation-window > * {
+        margin: 5% 0;
+    }
+    .deletion-buttons {
+        text-align: center;
+
+        .delete-routine {
+            @include rounded-border();
+            margin: 1rem;
+            border: none;
+            padding: 1rem;
+        }
+    }
+}
+
+.routine-description-details,
+.routine-name-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.error-message {
+    color: $complementary-color;
+    font-style: italic;
+}
+
+/* ===========================================
+SIDE MENU
+=========================================== */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    background: $pale-blue;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    left: -250px;
+    z-index: 5;
+    -webkit-box-shadow: 2px 0px 2px 0px #000000;
+    box-shadow: 2px 0px 2px 0px #000000;
+    width: 250px;
+
+    transition: all 0.5s ease-in-out;
+    padding-top: 3rem;
+    &.open {
+        left: 0;
+    }
+    &.hidden {
+        display: none;
+    }
+    .user-settings {
+        width: 100%;
+        p {
+            font-size: 0.8rem;
+        }
         display: flex;
         flex-direction: column;
         align-items: center;
-        text-align: center;
-        .confirmationWindow > * {
-            margin: 5% 0;
+        & > * {
+            margin: 3%;
         }
-        .deletionButtons {
-            text-align: center;
+
+        .setting-button {
+            @include rounded-border();
+            border: none;
+            padding: 0.5rem;
+            width: 90%;
         }
     }
-
-    .routineDescriptionDetails,
-    .routineNameDetails {
-        display: flex;
-        flex-direction: column;
+    .close-menu,
+    .open-menu {
+        background: none;
+        border: none;
+        position: absolute;
+        font-size: 2rem;
+        top: 0.5rem;
+        right: 1rem;
     }
-
-    .errorMessage {
-        color: $complementary-color;
-        font-style: italic;
+    .open-menu {
+        right: -3rem;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+        &.hidden {
+            opacity: 0;
+        }
     }
 }
 
@@ -215,52 +356,44 @@ MODALS
 ROUTINES
 =========================================== */
 
-.routineContainer {
-    @include roundedBorder();
+.routine-container {
+    @include rounded-border();
     position: relative;
     justify-content: space-between;
     padding: 4% 2%;
 
-    .moreInfo {
-        position: fixed;
-        bottom: 7%;
-        right: 0;
-        background: white;
-        z-index: 30;
-        height: 30px;
-        width: 30px;
-    }
-
-    .addButton {
+    .add-button {
         position: absolute;
         bottom: 0%;
         left: 50%;
         transform: translate(-50%, 50%);
-        button {
-            box-shadow: inset 0 0 2px 2px #000;
-            background: $primary-color;
-        }
+        box-shadow: inset 0 0 2px 2px #000;
+        background: $primary-color;
     }
 
-    .promptContainer {
+    .prompt-container {
         padding: 2% 0;
         .prompt {
             text-align: center;
+            margin: 2% 0;
         }
     }
 
-    .routineDescription {
-        @include roundedBorder();
+    .routine-description {
+        @include rounded-border();
         background: $pale-blue;
         padding: 5% 2%;
     }
 
-    button {
-        @include buttonSize();
+    .add-button,
+    .del-button,
+    .daily-check {
+        @include button-size();
         border: none;
         box-shadow: inset 0 0 2px 2px grey;
         border-radius: 25%;
-
+    }
+    .daily-check {
         &.disabled {
             cursor: initial;
             box-shadow: none;
@@ -272,7 +405,7 @@ ROUTINES
     }
 }
 
-.routineItem {
+.routine-item {
     box-shadow: 0px 0px 2px 2px rgb(0, 0, 0);
     border-radius: 5px;
 
@@ -281,10 +414,10 @@ ROUTINES
     display: flex;
     flex-direction: column;
 
-    .routineDetails {
+    .routine-details {
         display: grid;
         grid-template-columns: 20% 8fr 1fr;
-        .routineName {
+        .routine-name {
             display: flex;
             align-items: center;
             margin-right: 2%;
@@ -292,30 +425,30 @@ ROUTINES
                 max-width: 100%;
             }
         }
-        .routineChecks {
+        .routine-checks {
             display: flex;
             flex-wrap: nowrap;
             justify-content: space-between;
         }
 
-        .delButton {
+        .del-button-container {
             display: flex;
             justify-content: flex-end;
             position: relative;
 
-            button {
+            .del-button {
                 color: white;
                 background: $complementary-color;
                 box-shadow: inset 0 0 2px 2px #000;
             }
         }
     }
-    .routineDescription {
+    .routine-description {
         margin: 2% 0;
     }
 }
 
-.dateSelect {
+.date-select {
     padding: 2%;
     display: grid;
     grid-template-columns: 20% 8fr 1fr;
@@ -330,7 +463,7 @@ ROUTINES
         grid-column: 2 /3;
     }
     p {
-        @include buttonSize();
+        @include button-size();
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -372,6 +505,11 @@ MEDIA
 
 /* Landscape phone to portrait tablet */
 @media (max-width: 900px) {
+    @mixin button-size-900 {
+        height: 8vw;
+        width: 8vw;
+    }
+
     body {
         font-size: 0.9rem;
     }
@@ -383,51 +521,96 @@ MEDIA
             font-size: 1.1rem;
         }
     }
-    .routineContainer {
-        .dateSelect {
+
+    .login-screen {
+        width: 80%;
+    }
+
+    .side-menu {
+        .close-menu,
+        .open-menu {
+            font-size: 1.5rem;
+        }
+        .open-menu {
+            right: -2rem;
+        }
+    }
+
+    .modal .add-routine-submit,
+    .confirm-delete-modal .confirmation-window .delete-routine {
+        margin: 3%;
+        padding: 3%;
+    }
+
+    .add-check-days {
+        padding: 3%;
+    }
+
+    .routine-container {
+        .date-select {
             display: flex;
             .dates {
                 width: 100%;
             }
         }
+        .add-button,
+        .del-button,
+        .daily-check {
+            @include button-size-900();
+        }
     }
 
-    .routineItem {
-        .routineDetails {
+    .routine-item {
+        .routine-details {
             display: flex;
             flex-direction: column;
             align-items: center;
             & > * {
                 margin: 2% 0;
             }
-            .routineName {
+            .routine-name {
                 margin: 0;
             }
-            .routineChecks {
+            .routine-checks {
                 width: 100%;
             }
         }
     }
 
-    .modalBackground .modal .closeModal,
-    .modalBackground .addCheckDays .addDay,
-    .routineContainer button,
-    .dateSelect p {
-        height: 8vw;
-        width: 8vw;
+    .modal .close-modal,
+    .add-check-days .add-day,
+    .date-select p {
+        @include button-size-900();
     }
 }
 
 /* Landscape phones and down */
 @media (max-width: 480px) {
-    .routineContainer {
-        .dateSelect .dates {
+    body {
+        font-size: 0.8rem;
+    }
+    .login-screen {
+        width: 100%;
+    }
+
+    .side-menu {
+        .close-menu,
+        .open-menu {
+            font-size: 1.2rem;
+        }
+        .open-menu {
+            right: -1.7rem;
+        }
+    }
+
+    .routine-container {
+        .date-select .dates {
             background: none;
             box-shadow: none;
         }
     }
 
-    .routineItem .delButton button {
+    .routine-item .del-button {
         color: $complementary-color;
         background: none;
         box-shadow: none;

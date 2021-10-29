@@ -1,17 +1,17 @@
 const ConfirmDelete = ({ modalToggle, deleteRoutine }) => {
 
     return (
-        <div className="modalBackground">
+        <div className="modal-background">
 
-            <div className="modal confirmDeleteModal">
-                <button onClick={modalToggle} className="closeModal">X</button>
+            <div className="modal confirm-delete-modal">
+                <button onClick={modalToggle} className="close-modal">X</button>
 
-                <div className="confirmationWindow">
+                <div className="confirmation-window">
                     <p>Are you sure you wish to delete?</p>
                     <p>Routine deletion is permanent</p>
-                    <div className="deletionButtons">
-                        <button className="modalOption" onClick={deleteRoutine}>Delete</button>
-                        <button className="modalOption" onClick={modalToggle}>Cancel</button>
+                    <div className="deletion-buttons">
+                        <button className="delete-routine" onClick={deleteRoutine}>Delete</button>
+                        <button className="delete-routine" onClick={modalToggle}>Cancel</button>
                     </div>
                 </div>
             </div>
