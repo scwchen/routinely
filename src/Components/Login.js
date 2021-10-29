@@ -79,8 +79,11 @@ const Login = ({ setUser, setUserEmail, setLoggedOut, auth, signOut }) => {
         if (errorMessage.includes('wrong-password')) {
             setUserError('Incorrect username or password.');
         }
-        else if (errorMessage.includes('internal-error') || errorMessage.includes('invalid-email')) {
+        else if (errorMessage.includes('internal-error')) {
             setUserError('Please enter both username and password.');
+        }
+        else if (errorMessage.includes('invalid-email')) {
+            setUserError('Invalid Email');
         }
         else if (errorMessage.includes('email-already-in-use')) {
             setUserError('Email address already in use.');

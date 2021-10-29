@@ -89,7 +89,7 @@ const AddRoutine = ({ modalToggle, user }) => {
 
                     <fieldset className="routine-name-details">
                         <label htmlFor="routine-name">Name</label>
-                        <input type="text" id="routine-name" maxLength="25" onChange={handleNameChange} value={routineName} />
+                        <input type="text" id="routine-name" maxLength="40" onChange={handleNameChange} value={routineName} />
                     </fieldset>
 
                     {error === 'name' && <p className="error-message">Give your routine a name. You'll feel better if you do!</p>}

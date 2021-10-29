@@ -186,7 +186,7 @@ function App() {
                   routineList.length === 0 ?
                     <div className="prompt-container">
                       <p className="prompt">Start with just one habit</p>
-                      <p className="prompt">Click below</p>
+                      <p className="prompt">Click below to begin adding</p>
                     </div>
                     :
                     <div className="date-select">
