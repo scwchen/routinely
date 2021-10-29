@@ -118,11 +118,34 @@ function App() {
     setLoggedOut(true);
   };
 
+  // ===========================================
+  // Handling the settings button click to open settings menu
+  // ===========================================
+  const handleSettingsClick = (e) => {
+    e.target.classList.toggle('open');
+  };
 
   // Main Return
   return (
 
     <div className="App">
+
+      {/* Widgets and Modals */}
+
+      {/* Adding the Add and Delete modals but only rendering when needed */}
+      {addRoutineOpen && <AddRoutine
+        modalToggle={addModal}
+        user={user}
+      />}
+      {deleteRoutineOpen && <ConfirmDelete modalToggle={delModal} deleteRoutine={deleteRoutine} />}
+
+      <button className="user-settings-button button-open" onClick={handleSettingsClick} aria-label="Open user settings"><i className="fas fa-cog"></i></button>
+      <button className="user-settings-button button-close" onClick={handleSettingsClick} aria-label="Close user settings">
+        <i class="fas fa-chevron-right"></i></button>
+
+
+      {/* End of Widgets and Modals */}
+
       <div className="wrapper">
 
         <header>
@@ -135,32 +158,29 @@ function App() {
             loggedOut === false ?
 
               <div className="routine-container">
-                {/* Adding the Add and Delete modals but only rendering when needed */}
-                {addRoutineOpen && <AddRoutine
-                  modalToggle={addModal}
-                  user={user}
-                />}
-                {deleteRoutineOpen && <ConfirmDelete modalToggle={delModal} deleteRoutine={deleteRoutine} />}
 
-                <div className="user-status">
+                <div className="user-settings">
                   <p>User: {userEmail ? userEmail : null}</p>
-                  <button onClick={userLogout}>Log Out</button>
+                  <button className="user-logout" onClick={userLogout}>Log Out</button>
+                  <button className="more-info" onClick={toggleDescription}>
+                    Show Descriptions
+                  </button>
                 </div>
+
+
+
 
                 {/* Button to Add a new routine */}
-                <div className="add-button">
-                  <button onClick={addModal}><i className="fas fa-plus"></i></button>
-                </div>
 
-                {/* Debating whether I should use a button or not */}
-                <button className="more-info" onClick={toggleDescription}>
-                  <i className="fas fa-info"></i>
-                </button>
+                <button className="add-button" onClick={addModal} aria-label="Add a routine"><i className="fas fa-plus"></i></button>
+
+
 
                 {
                   routineList.length === 0 ?
                     <div className="prompt-container">
                       <p className="prompt">Start with just one habit</p>
+                      <p className="prompt">Click below</p>
                     </div>
                     :
                     <div className="date-select">
@@ -194,9 +214,9 @@ function App() {
 
 
                           {/* Adding a delete button for each routine */}
-                          <div className="del-button">
+                          <div className="del-button-container">
 
-                            <button value={toDelete} onClick={() => {
+                            <button class="del-button" value={toDelete} onClick={() => {
                               delModal();
                               setToDelete(key);
 

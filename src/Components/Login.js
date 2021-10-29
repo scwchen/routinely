@@ -112,7 +112,7 @@ const Login = ({ setUser, setUserEmail, setLoggedOut, auth, signOut }) => {
                     <label htmlFor="reg-show-pass">Show Password</label>
                 </div>
 
-                <button type="button" onClick={userReg}>Register</button>
+                <button className="reg-button" type="button" onClick={userReg}>Register</button>
             </form>
             <form className="login-form">
 
@@ -133,7 +133,7 @@ const Login = ({ setUser, setUserEmail, setLoggedOut, auth, signOut }) => {
                     <label htmlFor="login-show-pass">Show Password</label>
                 </div>
 
-                <button type="button" onClick={userLogin} >Login</button>
+                <button className="login-button" type="button" onClick={userLogin} >Login</button>
 
             </form>
 
