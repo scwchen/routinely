@@ -24,3 +24,6 @@ yarn-error.log*
 
 # general project files
 /project-start-files
+
+# environment variables
+.env
