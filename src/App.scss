@@ -50,10 +50,15 @@ html {
     font-size: 125%;
 }
 
+
 body {
     position: relative;
     word-wrap: break-word;
     font-family: "Poppins", sans-serif;
+}
+
+.App {
+    height: 100vh;
 }
 
 ul {
@@ -483,6 +488,14 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
+
+    @supports (position: sticky) {
+        position: sticky;
+        top: 100vh;
+        bottom: unset;
+        width: unset;
+    }
+
     display: flex;
     align-items: center;
     justify-content: center;

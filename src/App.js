@@ -171,16 +171,9 @@ function App() {
 
               <div className="routine-container">
 
-
-
-
-
-
                 {/* Button to Add a new routine */}
 
                 <button className="add-button" onClick={addModal} aria-label="Add a routine"><i className="fas fa-plus"></i></button>
-
-
 
                 {
                   routineList.length === 0 ?
@@ -195,7 +188,6 @@ function App() {
                       </div>
                     </div>
                 }
-
 
                 {
                   routineList.map((individualRoutine) => {
@@ -238,8 +230,6 @@ function App() {
                           </div>}
 
                       </div> // end of routineItem
-
-
                     )
                   })
 
@@ -263,8 +253,6 @@ function App() {
 
       <Footer />
     </div >     //  end of App 
-
-
   );
 }
 
