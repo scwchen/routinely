@@ -29,7 +29,6 @@ const AddRoutine = ({ modalToggle, user }) => {
                 description: routineDescription,
             }
 
-            console.log(dbRef);
             push(dbRef, newRoutine);
             // resetting the state values for what happens next
             setRoutineDescription('');
